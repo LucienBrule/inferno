@@ -1,0 +1,71 @@
+
+
+# ups.yaml — UPS Configuration for Inferno
+
+- id: ups-west
+  rack_id: rack-1
+  model: APC SRT3000RMXLT-NC
+  type: double-conversion
+  capacity_va: 3000
+  capacity_watts: 2700
+  input_plug: L6-30P
+  output_outlets:
+    - type: C13
+      quantity: 6
+    - type: C19
+      quantity: 2
+  form_factor: 2U
+  management: SNMP, Web, USB
+  estimated_runtime_minutes: 4.5
+  notes: Refurbished unit with pre-installed network card; powers PDU-A in rack-1
+
+- id: ups-east
+  rack_id: rack-2
+  model: APC SRT3000RMXLT-NC
+  type: double-conversion
+  capacity_va: 3000
+  capacity_watts: 2700
+  input_plug: L6-30P
+  output_outlets:
+    - type: C13
+      quantity: 6
+    - type: C19
+      quantity: 2
+  form_factor: 2U
+  management: SNMP, Web, USB
+  estimated_runtime_minutes: 5
+  notes: Refurbished unit; powers PDU-A in rack-2
+
+- id: ups-north
+  rack_id: rack-3
+  model: APC SRT3000RMXLT-NC
+  type: double-conversion
+  capacity_va: 3000
+  capacity_watts: 2700
+  input_plug: L6-30P
+  output_outlets:
+    - type: C13
+      quantity: 6
+    - type: C19
+      quantity: 2
+  form_factor: 2U
+  management: SNMP, Web, USB
+  estimated_runtime_minutes: 5
+  notes: Standard configuration; UPS battery expected to be replaced every 3 years
+
+- id: ups-crypt
+  rack_id: rack-4
+  model: APC SRT3000RMXLT-NC
+  type: double-conversion
+  capacity_va: 3000
+  capacity_watts: 2700
+  input_plug: L6-30P
+  output_outlets:
+    - type: C13
+      quantity: 6
+    - type: C19
+      quantity: 2
+  form_factor: 2U
+  management: SNMP, Web, USB
+  estimated_runtime_minutes: 4
+  notes: Monitors critical compute nodes; connected via dedicated SNMP IP

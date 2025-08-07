@@ -1,0 +1,71 @@
+# Inferno Cabling Policy
+# Canonical defaults used by CLI cabling tools (estimate/calculate/validate).
+# All lengths in meters unless noted.
+
+version: 1
+units:
+  length: m
+
+defaults:
+  # Per-node NIC assumptions when not explicitly modeled in nodes.yaml
+  nodes_25g_per_node: 1        # SFP28 25G links per node (leaf→node)
+  mgmt_rj45_per_node: 1        # RJ45 Cat6A mgmt per node
+  wan_cat6a_count: 2           # RJ45 Cat6A uplinks to WAN/router (site-wide)
+
+  # Per-ToR uplink policy
+  tor_uplink_qsfp28_per_tor: 2 # QSFP28 100G uplinks from ToR → spine
+
+  # General planning knobs
+  slack_factor: 1.20           # Multiply physical distance by this for service loop + routing
+  spares_fraction: 0.10        # Extra per line item (rounded up)
+
+media_rules:
+  # Media selection & length bins per link class
+  sfp28_25g:
+    dac_max_m: 3               # Use DAC for ≤ 3m, else AOC/fiber
+    prefer: dac                # Prefer DAC when within range
+    bins_m: [1, 2, 3, 5, 7, 10]
+    labels:
+      dac:  "SFP28 25G DAC"
+      aoc:  "SFP28 25G AOC"
+      fiber: "SFP28 25G MMF + SR"
+
+  qsfp28_100g:
+    dac_max_m: 3               # Use DAC for ≤ 3m, else AOC/fiber
+    prefer: dac
+    bins_m: [1, 2, 3, 5, 7, 10]
+    labels:
+      dac:  "QSFP28 100G DAC"
+      aoc:  "QSFP28 100G AOC"
+      fiber: "QSFP28 100G MMF + SR4"
+
+  rj45_cat6a:
+    bins_m: [1, 2, 3, 5, 7, 10]
+    label: "RJ45 Cat6A"
+
+heuristics:
+  # Applied when site geometry (doctrine/site.yaml) is absent.
+  same_rack_leaf_to_node_m: 1.5       # Vertical + short horizontal run
+  adjacent_rack_leaf_to_spine_m: 3    # ToR to central spine in adjacent bay
+  non_adjacent_rack_leaf_to_spine_m: 5
+  mgmt_leaf_to_node_m: 1.5
+
+validation:
+  # Port budgets used by `validate` until real inventory is parsed
+  tor_ports:
+    sfp28_total: 48   # SN2410: 48× SFP28 25G
+    qsfp28_total: 8   # SN2410: 8× QSFP28 100G
+  spine_ports:
+    qsfp28_total: 32  # SN2700: 32× QSFP28 100G
+
+site-defaults:
+  num_racks: 4
+  nodes_per_rack: 4
+  uplinks_per_rack: 2        # QSFP28 per ToR → spine
+  mgmt_rj45_per_node: 1
+  wan_cat6a: 2
+
+notes:
+  - Increase `nodes_25g_per_node` to 2 for LACP or dual-homing scenarios.
+  - For longer inter-rack runs, set `dac_max_m` small and rely on AOC/fiber bins.
+  - Slack factor is multiplied before binning to nearest available length.

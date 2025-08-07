@@ -1,0 +1,65 @@
+# topology.yaml — Leaf–Spine Network Topology
+
+spines:
+  - id: spine-1
+    model: Mellanox SN2700
+    nos: Cumulus Linux (SONiC compatible)
+    interfaces:
+      - name: eth1/1
+        type: 100G
+        connects_to: tor-west-1:qsfp28-1
+      - name: eth1/2
+        type: 100G
+        connects_to: tor-east-1:qsfp28-1
+      - name: eth1/3
+        type: 100G
+        connects_to: tor-north-1:qsfp28-1
+      - name: eth1/4
+        type: 100G
+        connects_to: tor-crypt-1:qsfp28-1
+  # Add additional spines if needed
+
+leafs:
+  - id: tor-west-1
+    rack_id: rack-1
+    model: Mellanox SN2410
+    nos: Cumulus Linux (SONiC compatible)
+    interfaces:
+      - name: qsfp28-1
+        type: 100G
+        connects_to: spine-1:eth1/1
+      - name: qsfp28-2
+        type: 100G
+        connects_to: spine-1:eth1/2   # optional multihome
+      - name: port1-25G
+        type: 25G
+        connects_to: server1
+      # rack server connections omitted for brevity
+  - id: tor-east-1
+    rack_id: rack-2
+    model: Mellanox SN2410
+    nos: Cumulus Linux (SONiC compatible)
+    interfaces:
+      - name: qsfp28-1
+        type: 100G
+        connects_to: spine-1:eth1/2
+      - name: qsfp28-2
+        type: 100G
+        connects_to: spine-1:eth1/1
+  - id: tor-north-1
+    rack_id: rack-3
+    model: Mellanox SN2410
+    nos: Cumulus Linux (SONiC compatible)
+    interfaces:
+      - name: qsfp28-1
+        type: 100G
+        connects_to: spine-1:eth1/3
+    # add additional uplinks or server ports as needed
+  - id: tor-crypt-1
+    rack_id: rack-4
+    model: Mellanox SN2410
+    nos: Cumulus Linux (SONiC compatible)
+    interfaces:
+      - name: qsfp28-1
+        type: 100G
+        connects_to: spine-1:eth1/4

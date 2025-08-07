@@ -1,0 +1,17 @@
+[project]
+name = "inferno"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Lucien Brule", email = "lucien@lucienbrule.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "graphviz>=0.21",
+    "pyyaml>=6.0.2",
+    "rich>=14.1.0",
+]
+
+[tool.uv.workspace]
+members = ["packages/*"]

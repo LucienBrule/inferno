@@ -1,0 +1,63 @@
+
+
+# tors.yaml — Top-of-Rack Switch Manifest
+
+- id: tor-west-1
+  rack_id: rack-1
+  model: FS S5850-48B8C
+  ports: "48x25G SFP28, 8x100G QSFP28"
+  nos: FSOS (SONiC capable)
+  uplinks:
+    - port: qsfp28-1
+      type: 100G
+      peer: core-1
+    - port: qsfp28-2
+      type: 100G
+      peer: core-2
+  vendor: FS.com
+  notes: First ToR in Avernus-West
+
+- id: tor-east-1
+  rack_id: rack-2
+  model: FS S5850-48B8C
+  ports: "48x25G SFP28, 8x100G QSFP28"
+  nos: FSOS (SONiC capable)
+  uplinks:
+    - port: qsfp28-1
+      type: 100G
+      peer: core-1
+    - port: qsfp28-2
+      type: 100G
+      peer: core-2
+  vendor: FS.com
+  notes: First ToR in Avernus-East
+
+- id: tor-north-1
+  rack_id: rack-3
+  model: FS S5850-48B8C
+  ports: "48x25G SFP28, 8x100G QSFP28"
+  nos: FSOS (SONiC capable)
+  uplinks:
+    - port: qsfp28-1
+      type: 100G
+      peer: core-1
+    - port: qsfp28-2
+      type: 100G
+      peer: core-2
+  vendor: FS.com
+  notes: First ToR in Avernus-North
+
+- id: tor-crypt-1
+  rack_id: rack-4
+  model: FS S5850-48B8C
+  ports: "48x25G SFP28, 8x100G QSFP28"
+  nos: FSOS (SONiC capable)
+  uplinks:
+    - port: qsfp28-1
+      type: 100G
+      peer: core-1
+    - port: qsfp28-2
+      type: 100G
+      peer: core-2
+  vendor: FS.com
+  notes: First ToR in Avernus-Crypt

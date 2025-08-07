@@ -1,0 +1,145 @@
+
+
+- id: pdu-west-a
+  rack_id: rack-1
+  feed: A
+  model: TBD
+  type: switched + metered
+  form_factor: 0U
+  input:
+    plug: L6-30P
+    voltage: 240
+    amperage: 30
+  output_outlets:
+    - type: C13
+      quantity: 24
+    - type: C19
+      quantity: 6
+  management: SNMP, Web
+  notes: UPS-backed feed from ups-west
+
+- id: pdu-west-b
+  rack_id: rack-1
+  feed: B
+  model: TBD
+  type: switched + metered
+  form_factor: 0U
+  input:
+    plug: L6-30P
+    voltage: 240
+    amperage: 30
+  output_outlets:
+    - type: C13
+      quantity: 24
+    - type: C19
+      quantity: 6
+  management: SNMP, Web
+  notes: Direct feed (non-UPS)
+
+- id: pdu-east-a
+  rack_id: rack-2
+  feed: A
+  model: TBD
+  type: switched + metered
+  form_factor: 0U
+  input:
+    plug: L6-30P
+    voltage: 240
+    amperage: 30
+  output_outlets:
+    - type: C13
+      quantity: 24
+    - type: C19
+      quantity: 6
+  management: SNMP, Web
+  notes: UPS-backed feed from ups-east
+
+- id: pdu-east-b
+  rack_id: rack-2
+  feed: B
+  model: TBD
+  type: switched + metered
+  form_factor: 0U
+  input:
+    plug: L6-30P
+    voltage: 240
+    amperage: 30
+  output_outlets:
+    - type: C13
+      quantity: 24
+    - type: C19
+      quantity: 6
+  management: SNMP, Web
+  notes: Direct feed (non-UPS)
+
+- id: pdu-north-a
+  rack_id: rack-3
+  feed: A
+  model: TBD
+  type: switched + metered
+  form_factor: 0U
+  input:
+    plug: L6-30P
+    voltage: 240
+    amperage: 30
+  output_outlets:
+    - type: C13
+      quantity: 24
+    - type: C19
+      quantity: 6
+  management: SNMP, Web
+  notes: UPS-backed feed from ups-north
+
+- id: pdu-north-b
+  rack_id: rack-3
+  feed: B
+  model: TBD
+  type: switched + metered
+  form_factor: 0U
+  input:
+    plug: L6-30P
+    voltage: 240
+    amperage: 30
+  output_outlets:
+    - type: C13
+      quantity: 24
+    - type: C19
+      quantity: 6
+  management: SNMP, Web
+  notes: Direct feed (non-UPS)
+
+- id: pdu-crypt-a
+  rack_id: rack-4
+  feed: A
+  model: TBD
+  type: switched + metered
+  form_factor: 0U
+  input:
+    plug: L6-30P
+    voltage: 240
+    amperage: 30
+  output_outlets:
+    - type: C13
+      quantity: 24
+    - type: C19
+      quantity: 6
+  management: SNMP, Web
+  notes: UPS-backed feed from ups-crypt
+
+- id: pdu-crypt-b
+  rack_id: rack-4
+  feed: B
+  model: TBD
+  type: switched + metered
+  form_factor: 0U
+  input:
+    plug: L6-30P
+    voltage: 240
+    amperage: 30
+  output_outlets:
+    - type: C13
+      quantity: 24
+    - type: C19
+      quantity: 6
+  management: SNMP, Web
+  notes: Direct feed (non-UPS)

@@ -1,0 +1,94 @@
+- id: circle-0
+  circle: 0
+  role: vestibule
+  name: Vestibule
+  rack_ids:
+    - rack-1
+    - rack-2
+    - rack-3
+    - rack-4
+  nodes:
+    - switch-core-1
+    - patch-panel-main
+
+- id: circle-1
+  circle: 1
+  role: core
+  name: Core
+  rack_ids:
+    - rack-1
+  nodes:
+    - master
+
+- id: circle-2
+  circle: 2
+  role: gpu
+  name: GPU
+  rack_ids:
+    - rack-1
+  nodes:
+    - compute-1
+
+- id: circle-3
+  circle: 3
+  role: gluttony
+  name: Gluttony
+  rack_ids:
+    - rack-2
+  nodes:
+    - san-1
+
+- id: circle-4
+  circle: 4
+  role: greed
+  name: Greed
+  rack_ids:
+    - rack-2
+  nodes:
+    - market-1
+
+- id: circle-5
+  circle: 5
+  role: wrath
+  name: Wrath
+  rack_ids:
+    - rack-3
+  nodes:
+    - firewall-1
+    - ids-1
+
+- id: circle-6
+  circle: 6
+  role: heresy
+  name: Heresy
+  rack_ids:
+    - rack-3
+  nodes:
+    - exper-1
+
+- id: circle-7
+  circle: 7
+  role: violence
+  name: Violence
+  rack_ids:
+    - rack-3
+  nodes:
+    - redteam-1
+
+- id: circle-8
+  circle: 8
+  role: fraud
+  name: Fraud
+  rack_ids:
+    - rack-4
+  nodes:
+    - adversary-1
+
+- id: circle-9
+  circle: 9
+  role: treachery
+  name: Treachery
+  rack_ids:
+    - rack-4
+  nodes:
+    - cold-backup-1

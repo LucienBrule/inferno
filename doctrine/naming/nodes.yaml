@@ -1,0 +1,254 @@
+- id: master
+  hostname: inferno-master
+  circle_id: circle-1
+  rack_id: rack-1
+  role: orchestrator
+  chassis:
+    vendor: Supermicro
+    model: AS-2124BT-HNTR
+    u_height: 2
+    gpus: 0
+    cpu: "2x AMD EPYC 9354"
+    ram_gb: 256
+
+- id: compute-1
+  hostname: inferno-gpu-1
+  circle_id: circle-2
+  rack_id: rack-1
+  role: gpu
+  chassis:
+    vendor: Supermicro
+    model: AS-4125GS-TNR
+    u_height: 4
+    gpus: 4
+    cpu: "2x AMD EPYC 9655"
+    ram_gb: 1536
+
+- id: san-1
+  hostname: inferno-san-1
+  circle_id: circle-3
+  rack_id: rack-2
+  role: storage
+  chassis:
+    vendor: Supermicro
+    model: AS-2125HS-TNR
+    u_height: 2
+    gpus: 0
+    cpu: "1x AMD EPYC 9334"
+    ram_gb: 768
+
+# Circle 0: Vestibule (Networking)
+- id: switch-core-1
+  hostname: inferno-switch-core-1
+  circle_id: circle-0
+  rack_id: rack-1
+  role: network
+  chassis:
+    vendor: Generic
+    model: ToR-Switch
+    u_height: 1
+    gpus: 0
+    cpu: "N/A"
+    ram_gb: 0
+
+- id: patch-panel-main
+  hostname: inferno-patch-panel-main
+  circle_id: circle-0
+  rack_id: rack-1
+  role: network
+  chassis:
+    vendor: Generic
+    model: Patch-Panel
+    u_height: 1
+    gpus: 0
+    cpu: "N/A"
+    ram_gb: 0
+
+- id: jumpbox-1
+  hostname: inferno-jumpbox-1
+  circle_id: circle-0
+  rack_id: rack-1
+  role: gateway
+  chassis:
+    vendor: Supermicro
+    model: CSE-815TQ-340C
+    u_height: 1
+    gpus: 0
+    cpu: "Intel Xeon E3-1270 v3"
+    ram_gb: 32
+
+# Circle 4: Greed (Finance)
+- id: market-1
+  hostname: inferno-market-1
+  circle_id: circle-4
+  rack_id: rack-2
+  role: finance
+  chassis:
+    vendor: Generic
+    model: Rack-Unit
+    u_height: 1
+    gpus: 0
+    cpu: "N/A"
+    ram_gb: 0
+
+# Circle 5: Wrath (Security)
+- id: firewall-1
+  hostname: inferno-firewall-1
+  circle_id: circle-5
+  rack_id: rack-3
+  role: security
+  chassis:
+    vendor: Generic
+    model: Rack-Unit
+    u_height: 1
+    gpus: 0
+    cpu: "N/A"
+    ram_gb: 0
+
+- id: ids-1
+  hostname: inferno-ids-1
+  circle_id: circle-5
+  rack_id: rack-3
+  role: security
+  chassis:
+    vendor: Generic
+    model: Rack-Unit
+    u_height: 1
+    gpus: 0
+    cpu: "N/A"
+    ram_gb: 0
+
+# Circle 6: Heresy (Experimental)
+- id: exper-1
+  hostname: inferno-exper-1
+  circle_id: circle-6
+  rack_id: rack-3
+  role: experimental
+  chassis:
+    vendor: Generic
+    model: Rack-Unit
+    u_height: 1
+    gpus: 0
+    cpu: "N/A"
+    ram_gb: 0
+
+# Circle 7: Violence (Red Team)
+- id: redteam-1
+  hostname: inferno-redteam-1
+  circle_id: circle-7
+  rack_id: rack-3
+  role: redteam
+  chassis:
+    vendor: Generic
+    model: Rack-Unit
+    u_height: 1
+    gpus: 0
+    cpu: "N/A"
+    ram_gb: 0
+
+# Circle 8: Fraud (Adversarial)
+- id: adversary-1
+  hostname: inferno-adversary-1
+  circle_id: circle-8
+  rack_id: rack-4
+  role: adversarial
+  chassis:
+    vendor: Generic
+    model: Rack-Unit
+    u_height: 1
+    gpus: 0
+    cpu: "N/A"
+    ram_gb: 0
+
+# Circle 9: Treachery (Backup)
+- id: cold-backup-1
+  hostname: inferno-backup-1
+  circle_id: circle-9
+  rack_id: rack-4
+  role: backup
+  chassis:
+    vendor: Generic
+    model: Rack-Unit
+    u_height: 1
+    gpus: 0
+    cpu: "N/A"
+    ram_gb: 0
+
+# Circle 0: Vestibule entries for racks 2–4
+- id: switch-leaf-2
+  hostname: inferno-switch-leaf-2
+  circle_id: circle-0
+  rack_id: rack-2
+  role: network
+  chassis:
+    vendor: Generic
+    model: ToR-Switch
+    u_height: 1
+    gpus: 0
+    cpu: "N/A"
+    ram_gb: 0
+
+- id: patch-panel-2
+  hostname: inferno-patch-panel-2
+  circle_id: circle-0
+  rack_id: rack-2
+  role: network
+  chassis:
+    vendor: Generic
+    model: Patch-Panel
+    u_height: 1
+    gpus: 0
+    cpu: "N/A"
+    ram_gb: 0
+
+- id: switch-leaf-3
+  hostname: inferno-switch-leaf-3
+  circle_id: circle-0
+  rack_id: rack-3
+  role: network
+  chassis:
+    vendor: Generic
+    model: ToR-Switch
+    u_height: 1
+    gpus: 0
+    cpu: "N/A"
+    ram_gb: 0
+
+- id: patch-panel-3
+  hostname: inferno-patch-panel-3
+  circle_id: circle-0
+  rack_id: rack-3
+  role: network
+  chassis:
+    vendor: Generic
+    model: Patch-Panel
+    u_height: 1
+    gpus: 0
+    cpu: "N/A"
+    ram_gb: 0
+
+- id: switch-leaf-4
+  hostname: inferno-switch-leaf-4
+  circle_id: circle-0
+  rack_id: rack-4
+  role: network
+  chassis:
+    vendor: Generic
+    model: ToR-Switch
+    u_height: 1
+    gpus: 0
+    cpu: "N/A"
+    ram_gb: 0
+
+- id: patch-panel-4
+  hostname: inferno-patch-panel-4
+  circle_id: circle-0
+  rack_id: rack-4
+  role: network
+  chassis:
+    vendor: Generic
+    model: Patch-Panel
+    u_height: 1
+    gpus: 0
+    cpu: "N/A"
+    ram_gb: 0

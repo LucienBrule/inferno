@@ -1,0 +1,62 @@
+
+
+# cooling_options.yaml
+
+strategies:
+
+  - id: one-per-rack
+    label: Dedicated 3-ton Mini-Split Per Rack
+    description: >
+      Each rack has its own independent 36,000 BTU (3-ton) mini-split system with wall-mounted head and outdoor condenser.
+    racks_served: 1
+    unit_capacity_btu: 36000
+    unit_capacity_tons: 3.0
+    total_units: 4
+    total_capacity_btu: 144000
+    total_capacity_tons: 12.0
+    advantages:
+      - Fully independent cooling per rack
+      - Easy replacement and scaling
+      - Local temperature isolation
+    drawbacks:
+      - Higher total cost
+      - More outdoor units (4x)
+      - More wall space required
+
+  - id: dual-zone-pairing
+    label: Two Dual-Zone 3-ton Mini-Splits
+    description: >
+      Two dual-zone mini-split systems rated for 36,000 BTU (3 tons) each, with two indoor heads per system, cooling 2 racks each.
+    racks_served: 2
+    unit_capacity_btu: 36000
+    unit_capacity_tons: 3.0
+    total_units: 2
+    total_capacity_btu: 72000
+    total_capacity_tons: 6.0
+    advantages:
+      - Balanced redundancy (2x2)
+      - Fewer outdoor units
+      - Reduced wiring and line sets
+    drawbacks:
+      - One unit outage affects 2 racks
+      - Still requires 2 outdoor units
+      - Shared thermal load
+
+  - id: single-large-multizone
+    label: One 5-ton Multi-Zone System
+    description: >
+      Single 60,000 BTU (5-ton) outdoor unit driving 4 indoor heads (15,000 BTU each) across all racks.
+    racks_served: 4
+    unit_capacity_btu: 60000
+    unit_capacity_tons: 5.0
+    total_units: 1
+    total_capacity_btu: 60000
+    total_capacity_tons: 5.0
+    advantages:
+      - Only one outdoor condenser
+      - Simplified install
+      - Lower cost and noise
+    drawbacks:
+      - Single point of failure
+      - No thermal isolation between racks
+      - Requires careful balancing

@@ -1,0 +1,19 @@
+[project]
+name = "inferno-core"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Lucien Brule", email = "lucien@lucienbrule.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic>=2.11.7",
+]
+
+[project.scripts]
+inferno-core = "inferno_core:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

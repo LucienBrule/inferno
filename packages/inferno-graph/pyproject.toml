@@ -1,0 +1,22 @@
+[project]
+name = "inferno-graph"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Lucien Brule", email = "lucien@lucienbrule.com" }
+]
+requires-python = ">=3.12"
+dependencies = []
+
+[project.scripts]
+inferno-graph = "inferno_graph:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv.dependencies]
+inferno_core = { path = "../inferno-core", develop = true }
+inferno_planner = { path = "../inferno-planner", develop = true }
+inferno_tools = { path = "../inferno-tools", develop = true }

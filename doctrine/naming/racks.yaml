@@ -1,0 +1,34 @@
+
+
+- id: rack-1
+  name: Avernus-West
+  location: front-west
+  circle_ids:
+    - circle-0
+    - circle-1
+    - circle-2
+
+- id: rack-2
+  name: Avernus-East
+  location: front-east
+  circle_ids:
+    - circle-0
+    - circle-3
+    - circle-4
+
+- id: rack-3
+  name: Avernus-North
+  location: rear-center
+  circle_ids:
+    - circle-0
+    - circle-5
+    - circle-6
+    - circle-7
+
+- id: rack-4
+  name: Avernus-Crypt
+  location: rear-right
+  circle_ids:
+    - circle-0
+    - circle-8
+    - circle-9

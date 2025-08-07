@@ -1,0 +1,41 @@
+# feeds.yaml — Power feed specification
+
+- id: feed-west
+  circuit_type: L6-30R
+  voltage: 240
+  amperage: 30
+  phase: single
+  breaker_panel: garage-subpanel
+  rack_ids:
+    - rack-1
+  notes: Primary power feed for Avernus-West
+
+- id: feed-east
+  circuit_type: L6-30R
+  voltage: 240
+  amperage: 30
+  phase: single
+  breaker_panel: garage-subpanel
+  rack_ids:
+    - rack-2
+  notes: Primary power feed for Avernus-East
+
+- id: feed-north
+  circuit_type: L6-30R
+  voltage: 240
+  amperage: 30
+  phase: single
+  breaker_panel: garage-subpanel
+  rack_ids:
+    - rack-3
+  notes: Primary power feed for Avernus-North
+
+- id: feed-crypt
+  circuit_type: L6-30R
+  voltage: 240
+  amperage: 30
+  phase: single
+  breaker_panel: garage-subpanel
+  rack_ids:
+    - rack-4
+  notes: Primary power feed for Avernus-Crypt

@@ -1,0 +1,84 @@
+version: 1
+units:
+  power: W
+  voltage: V
+  current: A
+  cooling_btu_per_hr_per_watt: 3.412
+assumptions:
+  branch_voltage_v: 240
+  branch_amperage_a: 30
+  continuous_load_factor: 0.80   # NEC 80% rule for continuous load
+  continuous_capacity_w: 5760     # 240V * 30A * 0.80
+  notes:
+    - All estimates assume 80% safe loading threshold per circuit.
+    - Actual consumption varies with workload, fan curves, and PSU efficiency.
+    - Validate with PDU/UPS telemetry and revise as hardware lands.
+
+racks:
+  - id: rack-1
+    name: Avernus-West
+    feed_id: feed-west
+    components:
+      - name: GPU Server (8× GPU)
+        estimated_w: 2000
+      - name: Storage Node (12× SSD)
+        estimated_w: 400
+      - name: SN2410 ToR Switch
+        estimated_w: 150
+      - name: Auxiliary / Fans / Margin
+        estimated_w: 200
+    estimated_draw_w: 2750
+    circuit_continuous_capacity_w: 5760
+    circuit_headroom_w: 3010   # 5760 - 2750
+
+  - id: rack-2
+    name: Avernus-East
+    feed_id: feed-east
+    components:
+      - name: Dual 2U Servers
+        estimated_w: 600
+        notes: "~2 × 300W"
+      - name: SN2410 ToR Switch
+        estimated_w: 150
+      - name: Auxiliary / Margin
+        estimated_w: 200
+    estimated_draw_w: 950
+    circuit_continuous_capacity_w: 5760
+    circuit_headroom_w: 4810   # 5760 - 950
+
+  - id: rack-3
+    name: Avernus-North
+    feed_id: feed-north
+    components:
+      - name: General Compute Nodes
+        estimated_w: 1600
+        notes: "~4 × 400W"
+      - name: SN2410 ToR Switch
+        estimated_w: 150
+      - name: Auxiliary / Margin
+        estimated_w: 250
+    estimated_draw_w: 2000
+    circuit_continuous_capacity_w: 5760
+    circuit_headroom_w: 3760   # 5760 - 2000
+
+  - id: rack-4
+    name: Avernus-Crypt
+    feed_id: feed-crypt
+    components:
+      - name: Mixed Role Nodes (GPU + Storage)
+        estimated_w: 2400
+      - name: SN2410 ToR Switch
+        estimated_w: 150
+      - name: Auxiliary / Margin
+        estimated_w: 250
+    estimated_draw_w: 2800
+    circuit_continuous_capacity_w: 5760
+    circuit_headroom_w: 2960   # 5760 - 2800
+
+summary:
+  total_estimated_draw_w: 9500   # 2750 + 950 + 2000 + 2800
+  total_cooling_load_btu_per_hr_nominal: 32414   # 9500 * 3.412 (no headroom)
+  recommended_headroom_factor: 1.25
+  total_cooling_load_btu_per_hr_with_headroom: 40518  # 32414 * 1.25
+  notes:
+    - Cooling summary here is informational; use tools/cooling in by-load mode for canonical values.
