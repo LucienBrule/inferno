@@ -1,13 +1,9 @@
 import graphviz
+from inferno_core.data import nodes, racks
+from inferno_core.models import Node, Rack
 
-from inferno_core.data import racks, nodes
-from inferno_core.models import Rack, Node
 
-
-def render_node_topology(
-        racks: list[Rack] = racks,
-        nodes: list[Node] = nodes
-) -> graphviz.Digraph:
+def render_node_topology(racks: list[Rack] = racks, nodes: list[Node] = nodes) -> graphviz.Digraph:
     dot = graphviz.Digraph("inferno_node_topo", format="svg")
     dot.attr("node", shape="rectangle")
 

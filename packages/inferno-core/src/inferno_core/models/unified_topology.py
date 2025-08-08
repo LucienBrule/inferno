@@ -1,17 +1,20 @@
 """
 Unified topology model that serves as a superset of NetworkTopology and TopologyRec.
 
-This model supports both interface-level connectivity (NetworkTopology) and 
+This model supports both interface-level connectivity (NetworkTopology) and
 rack-level capacity planning (TopologyRec) use cases.
 """
 
 from __future__ import annotations
-from pydantic import BaseModel, Field, field_validator, ConfigDict
+
 from typing import List, Optional
+
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class UnifiedInterface(BaseModel):
     """Network interface with connection information."""
+
     model_config = ConfigDict(extra="ignore")
     name: str
     type: str  # e.g., "100G", "25G"
@@ -20,6 +23,7 @@ class UnifiedInterface(BaseModel):
 
 class UnifiedPorts(BaseModel):
     """Port capacity information for switches."""
+
     model_config = ConfigDict(extra="ignore")
     sfp28_total: Optional[int] = Field(default=None, ge=0)
     qsfp28_total: Optional[int] = Field(default=None, ge=0)
@@ -32,6 +36,7 @@ class UnifiedPorts(BaseModel):
 
 class UnifiedSwitch(BaseModel):
     """Unified switch model supporting both interface and capacity views."""
+
     model_config = ConfigDict(extra="ignore")
     id: str
     model: str
@@ -43,6 +48,7 @@ class UnifiedSwitch(BaseModel):
 
 class UnifiedRack(BaseModel):
     """Rack configuration for capacity planning."""
+
     model_config = ConfigDict(extra="ignore")
     rack_id: str
     tor_id: str
@@ -56,6 +62,7 @@ class UnifiedRack(BaseModel):
 
 class UnifiedWan(BaseModel):
     """WAN uplink configuration."""
+
     model_config = ConfigDict(extra="ignore")
     uplinks_cat6a: int = Field(ge=0)
 
@@ -72,6 +79,7 @@ class UnifiedTopology(BaseModel):
     This model can be populated from either NetworkTopology or TopologyRec formats
     and provides methods to convert between them.
     """
+
     model_config = ConfigDict(extra="ignore")
 
     schema_version: str = Field(default="1.0")
@@ -112,9 +120,9 @@ class UnifiedTopology(BaseModel):
                 pass
         return v
 
-    def to_network_topology(self) -> 'NetworkTopology':
+    def to_network_topology(self) -> NetworkTopology:
         """Convert to NetworkTopology format."""
-        from inferno_core.models.network import NetworkTopology, Switch, Interface
+        from inferno_core.models.network import Interface, NetworkTopology, Switch
 
         self.require_interface_view()
 
@@ -123,42 +131,34 @@ class UnifiedTopology(BaseModel):
             interfaces = []
             if spine.interfaces:
                 for iface in spine.interfaces:
-                    interfaces.append(Interface(
-                        name=iface.name,
-                        type=iface.type,
-                        connects_to=iface.connects_to or ""
-                    ))
-            spines.append(Switch(
-                id=spine.id,
-                model=spine.model,
-                nos=spine.nos or "",
-                interfaces=interfaces,
-                rack_id=spine.rack_id
-            ))
+                    interfaces.append(Interface(name=iface.name, type=iface.type, connects_to=iface.connects_to or ""))
+            spines.append(
+                Switch(
+                    id=spine.id, model=spine.model, nos=spine.nos or "", interfaces=interfaces, rack_id=spine.rack_id
+                )
+            )
 
         leafs = []
         for leaf in self.leafs:
             interfaces = []
             if leaf.interfaces:
                 for iface in leaf.interfaces:
-                    interfaces.append(Interface(
-                        name=iface.name,
-                        type=iface.type,
-                        connects_to=iface.connects_to or ""
-                    ))
-            leafs.append(Switch(
-                id=leaf.id,
-                model=leaf.model,
-                nos=leaf.nos or "",
-                interfaces=interfaces,
-                rack_id=leaf.rack_id
-            ))
+                    interfaces.append(Interface(name=iface.name, type=iface.type, connects_to=iface.connects_to or ""))
+            leafs.append(
+                Switch(id=leaf.id, model=leaf.model, nos=leaf.nos or "", interfaces=interfaces, rack_id=leaf.rack_id)
+            )
 
         return NetworkTopology(spines=spines, leafs=leafs)
 
-    def to_topology_rec(self) -> 'TopologyRec':
+    def to_topology_rec(self) -> TopologyRec:
         """Convert to TopologyRec format."""
-        from inferno_core.data.network_loader import TopologyRec, SpineRec, SpinePorts, TopologyRackRec, TopologyWanRec
+        from inferno_core.models.records import (
+            SpinePorts,
+            SpineRec,
+            TopologyRackRec,
+            TopologyRec,
+            TopologyWanRec,
+        )
 
         self.require_capacity_view()
 
@@ -166,86 +166,58 @@ class UnifiedTopology(BaseModel):
         if self.spine and self.spine.ports and self.spine.ports.qsfp28_total is not None:
             qs_total = int(self.spine.ports.qsfp28_total)
         spine_ports = SpinePorts(qsfp28_total=qs_total)
-        spine_rec = SpineRec(
-            id=self.spine.id,
-            model=self.spine.model,
-            ports=spine_ports
-        )
-        
+        spine_rec = SpineRec(id=self.spine.id, model=self.spine.model, ports=spine_ports)
+
         # Convert racks
         rack_recs = []
         for rack in self.racks:
-            rack_recs.append(TopologyRackRec(
-                rack_id=rack.rack_id,
-                tor_id=rack.tor_id,
-                uplinks_qsfp28=rack.uplinks_qsfp28
-            ))
-        
+            rack_recs.append(
+                TopologyRackRec(rack_id=rack.rack_id, tor_id=rack.tor_id, uplinks_qsfp28=rack.uplinks_qsfp28)
+            )
+
         # Convert WAN
         wan_rec = TopologyWanRec(uplinks_cat6a=self.wan.uplinks_cat6a)
-        
+
         return TopologyRec(spine=spine_rec, racks=rack_recs, wan=wan_rec)
-    
+
     @classmethod
-    def from_network_topology(cls, nt: 'NetworkTopology') -> 'UnifiedTopology':
+    def from_network_topology(cls, nt: NetworkTopology) -> UnifiedTopology:
         """Create UnifiedTopology from NetworkTopology."""
         spines = []
         for spine in nt.spines:
             interfaces = []
             for iface in spine.interfaces:
-                interfaces.append(UnifiedInterface(
-                    name=iface.name,
-                    type=iface.type,
-                    connects_to=iface.connects_to
-                ))
-            spines.append(UnifiedSwitch(
-                id=spine.id,
-                model=spine.model,
-                nos=spine.nos,
-                rack_id=spine.rack_id,
-                interfaces=interfaces
-            ))
-        
+                interfaces.append(UnifiedInterface(name=iface.name, type=iface.type, connects_to=iface.connects_to))
+            spines.append(
+                UnifiedSwitch(
+                    id=spine.id, model=spine.model, nos=spine.nos, rack_id=spine.rack_id, interfaces=interfaces
+                )
+            )
+
         leafs = []
         for leaf in nt.leafs:
             interfaces = []
             for iface in leaf.interfaces:
-                interfaces.append(UnifiedInterface(
-                    name=iface.name,
-                    type=iface.type,
-                    connects_to=iface.connects_to
-                ))
-            leafs.append(UnifiedSwitch(
-                id=leaf.id,
-                model=leaf.model,
-                nos=leaf.nos,
-                rack_id=leaf.rack_id,
-                interfaces=interfaces
-            ))
-        
+                interfaces.append(UnifiedInterface(name=iface.name, type=iface.type, connects_to=iface.connects_to))
+            leafs.append(
+                UnifiedSwitch(id=leaf.id, model=leaf.model, nos=leaf.nos, rack_id=leaf.rack_id, interfaces=interfaces)
+            )
+
         return cls(spines=spines, leafs=leafs)
-    
+
     @classmethod
-    def from_topology_rec(cls, tr: 'TopologyRec') -> 'UnifiedTopology':
+    def from_topology_rec(cls, tr: TopologyRec) -> UnifiedTopology:
         """Create UnifiedTopology from TopologyRec."""
         # Convert spine
         spine_ports = UnifiedPorts(qsfp28_total=tr.spine.ports.qsfp28_total)
-        spine = UnifiedSwitch(
-            id=tr.spine.id,
-            model=tr.spine.model,
-            ports=spine_ports
-        )
-        
+        spine = UnifiedSwitch(id=tr.spine.id, model=tr.spine.model, ports=spine_ports)
+
         # Convert racks
         racks = []
         for rack in tr.racks:
-            racks.append(UnifiedRack(
-                rack_id=rack.rack_id,
-                tor_id=rack.tor_id,
-                uplinks_qsfp28=rack.uplinks_qsfp28
-            ))
-        
+            racks.append(UnifiedRack(rack_id=rack.rack_id, tor_id=rack.tor_id, uplinks_qsfp28=rack.uplinks_qsfp28))
+
         # Convert WAN
         wan = UnifiedWan(uplinks_cat6a=tr.wan.uplinks_cat6a)
-        
+
         return cls(spine=spine, racks=racks, wan=wan)

@@ -1,17 +1,16 @@
-from dataclasses import dataclass
-from pathlib import Path
-from typing import List, Optional, Dict, Any, Tuple
 import csv
 import math
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
+
 import yaml
 
+# Import network loader functions
 from rich.console import Console
 
 # Import shared geometry helpers
-from .common import compute_rack_distance_m, apply_slack, select_length_bin
-
-# Import network loader functions
-from inferno_core.data.network_loader import load_topology, load_tors, load_nodes, load_site
+from .common import apply_slack, compute_rack_distance_m, select_length_bin
 
 console = Console()
 
@@ -19,6 +18,7 @@ console = Console()
 # ----------------------------
 # Dataclasses (for future structured returns)
 # ----------------------------
+
 
 @dataclass(frozen=True)
 class CablingSummary:
@@ -36,9 +36,11 @@ class CablingSummary:
 # Policy loading helpers
 # ----------------------------
 
+
 def _load_yaml(path: str) -> dict:
     try:
         import yaml  # local import to avoid hard dep elsewhere
+
         p = Path(path)
         if not p.exists():
             return {}
@@ -50,8 +52,8 @@ def _load_yaml(path: str) -> dict:
 def load_cabling_policy(path: str) -> dict:
     """Return a normalized policy dict with safe defaults if missing."""
     data = _load_yaml(path)
-    defaults = (data.get("defaults") or {})
-    media = (data.get("media_rules") or {})
+    defaults = data.get("defaults") or {}
+    media = data.get("media_rules") or {}
 
     # Safe defaults
     nodes_25g_per_node = int(defaults.get("nodes_25g_per_node", 1))
@@ -60,14 +62,14 @@ def load_cabling_policy(path: str) -> dict:
     tor_uplink_qsfp28_per_tor = int(defaults.get("tor_uplink_qsfp28_per_tor", 2))
     spares_fraction = float(defaults.get("spares_fraction", 0.10))
 
-    site = (data.get("site-defaults") or {})
+    site = data.get("site-defaults") or {}
     num_racks = int(site.get("num_racks", 4))
     nodes_per_rack = int(site.get("nodes_per_rack", 4))
     uplinks_per_rack = int(site.get("uplinks_per_rack", 2))
     mgmt_rj45_site = int(site.get("mgmt_rj45_per_node", mgmt_rj45_per_node))
     wan_cat6a_site = int(site.get("wan_cat6a", 2))
 
-    def _bins(key: str, label_key: str = None) -> list[int]:
+    def _bins(key: str, label_key: str | None = None) -> list[int]:
         m = media.get(key) or {}
         bins = m.get("bins_m") or [1, 2, 3, 5, 7, 10]
         try:
@@ -99,7 +101,9 @@ def load_cabling_policy(path: str) -> dict:
 
 
 def _with_spares(count: int, spares_fraction: float) -> int:
-    return int(math.ceil(count * (1.0 + spares_fraction)))
+    return math.ceil(count * (1.0 + spares_fraction))
+
+
 def estimate_cabling_heuristic(
     *,
     policy_path: str = "doctrine/network/cabling-policy.yaml",
@@ -157,8 +161,12 @@ def estimate_cabling_heuristic(
     total_wan_sp = _with_spares(total_wan, spares_fraction_eff)
 
     console.print("\n[bold cyan]Inferno Cabling Estimator (heuristic)[/bold cyan]\n")
-    console.print(f"[yellow]Leaf → Node (SFP28 25G):[/yellow] {total_leaf_to_node}  [dim](with spares: {total_leaf_to_node_sp})[/dim]")
-    console.print(f"[yellow]Leaf → Spine (QSFP28 100G):[/yellow] {total_leaf_to_spine}  [dim](with spares: {total_leaf_to_spine_sp})[/dim]")
+    console.print(
+        f"[yellow]Leaf → Node (SFP28 25G):[/yellow] {total_leaf_to_node}  [dim](with spares: {total_leaf_to_node_sp})[/dim]"
+    )
+    console.print(
+        f"[yellow]Leaf → Spine (QSFP28 100G):[/yellow] {total_leaf_to_spine}  [dim](with spares: {total_leaf_to_spine_sp})[/dim]"
+    )
     console.print(f"[yellow]Mgmt (RJ45 Cat6A):[/yellow] {total_mgmt}  [dim](with spares: {total_mgmt_sp})[/dim]")
     console.print(f"[yellow]WAN (RJ45 Cat6A):[/yellow] {total_wan}  [dim](with spares: {total_wan_sp})[/dim]")
 
@@ -171,9 +179,7 @@ def estimate_cabling_heuristic(
         )
     )
     console.print(
-        "[dim]Assumes {r} racks × {n} nodes per rack; {u} QSFP28 uplinks per ToR; {m} RJ45 mgmt per node; {w} WAN trunks (from policy/site-defaults).[/dim]\n".format(
-            r=num_racks_eff, n=nodes_per_rack_eff, u=uplinks_per_rack_eff, m=mgmt_rj45_per_node_eff, w=wan_cat6a_eff
-        )
+        f"[dim]Assumes {num_racks_eff} racks × {nodes_per_rack_eff} nodes per rack; {uplinks_per_rack_eff} QSFP28 uplinks per ToR; {mgmt_rj45_per_node_eff} RJ45 mgmt per node; {wan_cat6a_eff} WAN trunks (from policy/site-defaults).[/dim]\n"
     )
 
 
@@ -182,10 +188,12 @@ def _calculate_manhattan_distance(rack1_grid: List[int], rack2_grid: List[int], 
     return compute_rack_distance_m((rack1_grid[0], rack1_grid[1]), (rack2_grid[0], rack2_grid[1]), tile_m)
 
 
-def _select_cable_type_and_bin(distance_m: float, link_type: str, policy: Dict[str, Any], length_bins_m: List[int]) -> Tuple[str, int]:
+def _select_cable_type_and_bin(
+    distance_m: float, link_type: str, policy: Dict[str, Any], length_bins_m: List[int]
+) -> Tuple[str, int]:
     """Select cable type and length bin based on distance and policy."""
     # Apply slack factor
-    slack_factor = policy.get('heuristics', {}).get('slack_factor', 1.2)
+    slack_factor = policy.get("heuristics", {}).get("slack_factor", 1.2)
     adjusted_distance = apply_slack(distance_m, slack_factor)
 
     # Find appropriate length bin
@@ -195,131 +203,139 @@ def _select_cable_type_and_bin(distance_m: float, link_type: str, policy: Dict[s
         selected_bin = max(length_bins_m)  # Use largest bin if distance exceeds all bins
 
     # Determine cable type based on link type and distance
-    media_rules = policy.get('media_rules', {})
+    media_rules = policy.get("media_rules", {})
 
-    if link_type == '25G':
-        rules = media_rules.get('sfp28_25g', {})
-        dac_max = rules.get('dac_max_m', 3)
+    if link_type == "25G":
+        rules = media_rules.get("sfp28_25g", {})
+        dac_max = rules.get("dac_max_m", 3)
         if adjusted_distance <= dac_max:
-            cable_type = rules.get('labels', {}).get('dac', 'SFP28 25G DAC')
+            cable_type = rules.get("labels", {}).get("dac", "SFP28 25G DAC")
         elif adjusted_distance <= 10:
-            cable_type = rules.get('labels', {}).get('aoc', 'SFP28 25G AOC')
+            cable_type = rules.get("labels", {}).get("aoc", "SFP28 25G AOC")
         else:
-            cable_type = rules.get('labels', {}).get('fiber', 'SFP28 25G MMF + SR')
-    elif link_type == '100G':
-        rules = media_rules.get('qsfp28_100g', {})
-        dac_max = rules.get('dac_max_m', 3)
+            cable_type = rules.get("labels", {}).get("fiber", "SFP28 25G MMF + SR")
+    elif link_type == "100G":
+        rules = media_rules.get("qsfp28_100g", {})
+        dac_max = rules.get("dac_max_m", 3)
         if adjusted_distance <= dac_max:
-            cable_type = rules.get('labels', {}).get('dac', 'QSFP28 100G DAC')
+            cable_type = rules.get("labels", {}).get("dac", "QSFP28 100G DAC")
         elif adjusted_distance <= 10:
-            cable_type = rules.get('labels', {}).get('aoc', 'QSFP28 100G AOC')
+            cable_type = rules.get("labels", {}).get("aoc", "QSFP28 100G AOC")
         else:
-            cable_type = rules.get('labels', {}).get('fiber', 'QSFP28 100G MMF + SR4')
-    elif link_type == 'RJ45':
-        rules = media_rules.get('rj45_cat6a', {})
-        cable_type = rules.get('label', 'RJ45 Cat6A')
+            cable_type = rules.get("labels", {}).get("fiber", "QSFP28 100G MMF + SR4")
+    elif link_type == "RJ45":
+        rules = media_rules.get("rj45_cat6a", {})
+        cable_type = rules.get("label", "RJ45 Cat6A")
     else:
         cable_type = f"Unknown {link_type}"
 
     return cable_type, selected_bin
 
 
-def _build_network_links(topology: Dict[str, Any], site: Optional[Dict[str, Any]], policy: Dict[str, Any]) -> List[Dict[str, Any]]:
+def _build_network_links(
+    topology: Dict[str, Any], site: Optional[Dict[str, Any]], policy: Dict[str, Any]
+) -> List[Dict[str, Any]]:
     """Build network links with distances and cable types."""
     links = []
 
     # Build rack position lookup
     rack_positions = {}
-    if site and 'racks' in site:
-        for rack in site['racks']:
-            rack_positions[rack['id']] = rack['grid']
+    if site and "racks" in site:
+        for rack in site["racks"]:
+            rack_positions[rack["id"]] = rack["grid"]
 
     # Get spine rack position
     spine_rack = None
-    if site and 'spine' in site:
-        spine_rack = site['spine'].get('rack_id')
+    if site and "spine" in site:
+        spine_rack = site["spine"].get("rack_id")
 
     # Process spine to leaf connections
-    spines = topology.get('spines', [])
-    leafs = topology.get('leafs', [])
+    spines = topology.get("spines", [])
+    leafs = topology.get("leafs", [])
 
     for spine in spines:
-        spine_interfaces = spine.get('interfaces', [])
+        spine_interfaces = spine.get("interfaces", [])
         for interface in spine_interfaces:
-            if 'connects_to' in interface:
+            if "connects_to" in interface:
                 # Parse connection (e.g., "tor-west-1:qsfp28-1")
-                connection_parts = interface['connects_to'].split(':')
+                connection_parts = interface["connects_to"].split(":")
                 if len(connection_parts) == 2:
                     leaf_id, leaf_port = connection_parts
 
                     # Find the leaf
-                    leaf = next((l for l in leafs if l['id'] == leaf_id), None)
+                    leaf = next((l for l in leafs if l["id"] == leaf_id), None)
                     if leaf:
-                        leaf_rack = leaf.get('rack_id')
+                        leaf_rack = leaf.get("rack_id")
 
                         # Calculate distance
                         distance_m = 3.0  # Default fallback
                         if spine_rack and leaf_rack and spine_rack in rack_positions and leaf_rack in rack_positions:
-                            heuristics = policy.get('heuristics', {})
-                            tile_m = heuristics.get('tile_m', 1.0)
+                            heuristics = policy.get("heuristics", {})
+                            tile_m = heuristics.get("tile_m", 1.0)
                             distance_m = _calculate_manhattan_distance(
-                                rack_positions[spine_rack],
-                                rack_positions[leaf_rack],
-                                tile_m
+                                rack_positions[spine_rack], rack_positions[leaf_rack], tile_m
                             )
                         elif site is None:
                             # Use heuristic distances from policy
-                            heuristics = policy.get('heuristics', {})
+                            heuristics = policy.get("heuristics", {})
                             if spine_rack == leaf_rack:
-                                distance_m = heuristics.get('same_rack_leaf_to_node_m', 1.5)
+                                distance_m = heuristics.get("same_rack_leaf_to_node_m", 1.5)
                             else:
-                                distance_m = heuristics.get('adjacent_rack_leaf_to_spine_m', 3)
+                                distance_m = heuristics.get("adjacent_rack_leaf_to_spine_m", 3)
 
                         # Determine link type
-                        link_type = interface.get('type', '100G')
+                        link_type = interface.get("type", "100G")
 
                         # Select cable type and bin
-                        cable_type, length_bin = _select_cable_type_and_bin(distance_m, link_type, policy, [1, 2, 3, 5, 7, 10])
+                        cable_type, length_bin = _select_cable_type_and_bin(
+                            distance_m, link_type, policy, [1, 2, 3, 5, 7, 10]
+                        )
 
-                        links.append({
-                            'from': f"{spine['id']}:{interface['name']}",
-                            'to': f"{leaf_id}:{leaf_port}",
-                            'type': link_type,
-                            'distance_m': distance_m,
-                            'cable_type': cable_type,
-                            'length_bin': length_bin,
-                            'category': 'spine_to_leaf'
-                        })
+                        links.append(
+                            {
+                                "from": f"{spine['id']}:{interface['name']}",
+                                "to": f"{leaf_id}:{leaf_port}",
+                                "type": link_type,
+                                "distance_m": distance_m,
+                                "cable_type": cable_type,
+                                "length_bin": length_bin,
+                                "category": "spine_to_leaf",
+                            }
+                        )
 
     # Add WAN connections if specified
-    if site and 'spine' in site and 'wan_handoff' in site['spine']:
-        wan_handoff = site['spine']['wan_handoff']
-        wan_count = wan_handoff.get('count', 2)
-        wan_type = wan_handoff.get('type', 'RJ45')
+    if site and "spine" in site and "wan_handoff" in site["spine"]:
+        wan_handoff = site["spine"]["wan_handoff"]
+        wan_count = wan_handoff.get("count", 2)
+        wan_type = wan_handoff.get("type", "RJ45")
 
         for i in range(wan_count):
             cable_type, length_bin = _select_cable_type_and_bin(2.0, wan_type, policy, [1, 2, 3, 5, 7, 10])
-            links.append({
-                'from': f"spine-wan-{i+1}",
-                'to': f"wan-router:{i+1}",
-                'type': wan_type,
-                'distance_m': 2.0,
-                'cable_type': cable_type,
-                'length_bin': length_bin,
-                'category': 'wan'
-            })
+            links.append(
+                {
+                    "from": f"spine-wan-{i+1}",
+                    "to": f"wan-router:{i+1}",
+                    "type": wan_type,
+                    "distance_m": 2.0,
+                    "cable_type": cable_type,
+                    "length_bin": length_bin,
+                    "category": "wan",
+                }
+            )
 
     return links
 
 
-def _aggregate_cable_bom(links: List[Dict[str, Any]], policy: Dict[str, Any], spares_fraction: float, length_bins_m: List[int]) -> Dict[str, Any]:
+def _aggregate_cable_bom(
+    links: List[Dict[str, Any]], policy: Dict[str, Any], spares_fraction: float, length_bins_m: List[int]
+) -> Dict[str, Any]:
     """Aggregate links into BOM by cable type and length bin."""
     bom = {}
 
     # Count cables by type and length bin
     for link in links:
-        cable_type = link['cable_type']
-        length_bin = link['length_bin']
+        cable_type = link["cable_type"]
+        length_bin = link["length_bin"]
 
         if cable_type not in bom:
             bom[cable_type] = {}
@@ -338,23 +354,29 @@ def _aggregate_cable_bom(links: List[Dict[str, Any]], policy: Dict[str, Any], sp
     return bom
 
 
-def _validate_bom(topology: Dict[str, Any], tors: Dict[str, Any], nodes: Dict[str, Any], links: List[Dict[str, Any]], policy: Dict[str, Any]) -> List[str]:
+def _validate_bom(
+    topology: Dict[str, Any],
+    tors: Dict[str, Any],
+    nodes: Dict[str, Any],
+    links: List[Dict[str, Any]],
+    policy: Dict[str, Any],
+) -> List[str]:
     """Validate BOM against port capacities and other constraints."""
     warnings = []
 
     # Check for missing data
-    if not topology.get('spines'):
+    if not topology.get("spines"):
         warnings.append("No spines defined in topology")
-    if not topology.get('leafs'):
+    if not topology.get("leafs"):
         warnings.append("No leafs defined in topology")
 
     # Check link distances against cable type limits
     for link in links:
-        distance = link['distance_m']
-        cable_type = link['cable_type']
+        distance = link["distance_m"]
+        cable_type = link["cable_type"]
 
         # Basic distance checks
-        if distance > 10 and 'DAC' in cable_type:
+        if distance > 10 and "DAC" in cable_type:
             warnings.append(f"DAC cable selected for {distance:.1f}m link (max recommended: 3m)")
         elif distance > 100:
             warnings.append(f"Very long link: {distance:.1f}m may exceed cable specifications")
@@ -362,22 +384,24 @@ def _validate_bom(topology: Dict[str, Any], tors: Dict[str, Any], nodes: Dict[st
     return warnings
 
 
-def _export_bom(bom: Dict[str, Any], warnings: List[str], export_path: str, export_format: str, policy: Dict[str, Any]) -> None:
+def _export_bom(
+    bom: Dict[str, Any], warnings: List[str], export_path: str, export_format: str, policy: Dict[str, Any]
+) -> None:
     """Export BOM to YAML or CSV format."""
     # Prepare metadata
     metadata = {
-        'generated_by': 'inferno-cli tools cabling calculate',
-        'policy_applied': policy.get('version', 'unknown'),
-        'spares_fraction': policy.get('defaults', {}).get('spares_fraction', 0.1),
-        'slack_factor': policy.get('defaults', {}).get('slack_factor', 1.2),
-        'warnings': warnings
+        "generated_by": "inferno-cli tools cabling calculate",
+        "policy_applied": policy.get("version", "unknown"),
+        "spares_fraction": policy.get("defaults", {}).get("spares_fraction", 0.1),
+        "slack_factor": policy.get("defaults", {}).get("slack_factor", 1.2),
+        "warnings": warnings,
     }
 
-    if export_format.lower() == 'csv':
+    if export_format.lower() == "csv":
         # Export as CSV
-        with open(export_path, 'w', newline='') as csvfile:
+        with open(export_path, "w", newline="") as csvfile:
             writer = csv.writer(csvfile)
-            writer.writerow(['Cable Type', 'Length Bin (m)', 'Quantity'])
+            writer.writerow(["Cable Type", "Length Bin (m)", "Quantity"])
 
             for cable_type in sorted(bom.keys()):
                 for length_bin in sorted(bom[cable_type].keys()):
@@ -385,12 +409,9 @@ def _export_bom(bom: Dict[str, Any], warnings: List[str], export_path: str, expo
                     writer.writerow([cable_type, length_bin, quantity])
     else:
         # Export as YAML
-        output_data = {
-            'metadata': metadata,
-            'bom': bom
-        }
+        output_data = {"metadata": metadata, "bom": bom}
 
-        with open(export_path, 'w') as yamlfile:
+        with open(export_path, "w") as yamlfile:
             yaml.dump(output_data, yamlfile, default_flow_style=False, sort_keys=True)
 
 
@@ -407,7 +428,7 @@ def calculate_cabling_bom(
     export_format: str,
 ) -> None:
     """Deterministic BOM by reading manifests and policy.
-    
+
     Loads topology, site, and policy data to calculate exact cable requirements
     based on physical distances and network connections.
     """
@@ -424,7 +445,9 @@ def calculate_cabling_bom(
         console.print(f"[red]Error loading data: {e}[/red]")
         return
 
-    console.print(f"[green]✓[/green] Loaded topology: {len(topology.get('leafs', []))} ToRs, {len(topology.get('spines', []))} spines")
+    console.print(
+        f"[green]✓[/green] Loaded topology: {len(topology.get('leafs', []))} ToRs, {len(topology.get('spines', []))} spines"
+    )
     console.print(f"[green]✓[/green] Loaded site: {len(site.get('racks', []) if site else [])} racks")
 
     # Build network graph and calculate distances
@@ -457,7 +480,9 @@ def validate_cabling(
     console.print(f"topology: {topology_path}")
     console.print(f"nodes:    {nodes_path}")
     console.print(f"tors:     {tors_path}\n")
-    console.print("[dim]Implementation pending: port capacity checks, NIC coverage, and oversubscription warnings.[/dim]\n")
+    console.print(
+        "[dim]Implementation pending: port capacity checks, NIC coverage, and oversubscription warnings.[/dim]\n"
+    )
 
 
 def visualize_cabling(
@@ -476,14 +501,16 @@ def visualize_cabling(
 # Back-compat shim (legacy name)
 # ----------------------------
 def estimate_cabling(
-        num_racks: int = 4,
-        nodes_per_rack: int = 4,
-        uplinks_per_rack: int = 2,
-        trunk_cables: int = 2,
-        include_spine_links: bool = True,
+    num_racks: int = 4,
+    nodes_per_rack: int = 4,
+    uplinks_per_rack: int = 2,
+    trunk_cables: int = 2,
+    include_spine_links: bool = True,
 ):
     # DEPRECATED: Kept for early experiments. Prefer `estimate_cabling_heuristic()`.
-    console.print("[dim yellow]Deprecated:[/dim yellow] use `inferno-cli tools cabling estimate` (policy-driven) instead.\n")
+    console.print(
+        "[dim yellow]Deprecated:[/dim yellow] use `inferno-cli tools cabling estimate` (policy-driven) instead.\n"
+    )
 
     # Map legacy knobs into the modern estimator, but allow policy/site-defaults to override.
     estimate_cabling_heuristic(
@@ -497,7 +524,8 @@ def estimate_cabling(
         wan_cat6a=trunk_cables,
         include_spine_links=include_spine_links,
     )
-    return
+
+
 # ----------------------------
 # roundtrip_bom: BOM summary and roundtrip YAML
 # ----------------------------
@@ -506,8 +534,10 @@ def roundtrip_bom(*, bom_path: str, export_path: str, strict: bool = False) -> N
     Reads a BOM YAML file, computes a summary, and writes a summary YAML to export_path.
     Raises RuntimeError if the BOM file is missing or invalid.
     """
-    import yaml
     from pathlib import Path
+
+    import yaml
+
     try:
         # Use existing loader for consistency
         bom = _load_yaml(bom_path)
@@ -550,4 +580,3 @@ def roundtrip_bom(*, bom_path: str, export_path: str, strict: bool = False) -> N
     Path(export_path).parent.mkdir(parents=True, exist_ok=True)
     with open(export_path, "w", encoding="utf-8") as f:
         yaml.dump(output, f, default_flow_style=False, sort_keys=True)
-

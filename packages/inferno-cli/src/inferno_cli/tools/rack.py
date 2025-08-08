@@ -1,13 +1,16 @@
 import click
-
 from inferno_tools.layout import render_rack_layout
+
+
 @click.group()
 def cli() -> None:
     pass
 
+
 @cli.group()
 def rack() -> None:
     pass
+
 
 @rack.command()
 @click.option("--rack-id", type=int, default=1, show_default=True, help="Rack identifier to render.")

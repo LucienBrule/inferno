@@ -1,0 +1,19 @@
+[project]
+name = "inferno-lint"
+version = "0.1.0"
+description = "Flake8 plugin for Inferno architectural rules"
+readme = "README.md"
+authors = [
+    { name = "Lucien Brule", email = "lucien@lucienbrule.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "flake8>=7.3.0",
+]
+
+[project.scripts]
+inferno-lint = "inferno_lint:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

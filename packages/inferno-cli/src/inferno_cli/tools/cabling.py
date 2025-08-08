@@ -1,5 +1,6 @@
-import click
 from typing import Optional
+
+import click
 
 
 @click.group()
@@ -40,6 +41,7 @@ def estimate(policy: str, spares: float, lengths: str) -> None:
     """Quick heuristic counts by class (no site geometry required)."""
     try:
         from inferno_tools.cabling import estimate_cabling_heuristic
+
         bins = [int(x) for x in lengths.split(",") if x.strip()]
         estimate_cabling_heuristic(
             policy_path=policy,
@@ -129,6 +131,7 @@ def calculate(
     """Deterministic BOM by reading manifests and policy."""
     try:
         from inferno_tools.cabling import calculate_cabling_bom
+
         bins = [int(x) for x in lengths.split(",") if x.strip()]
         calculate_cabling_bom(
             topology_path=topology,
@@ -187,6 +190,7 @@ def calculate(
 def validate(topology: str, nodes: str, tors: str, policy: str, strict: bool, export: Optional[str]) -> None:
     """Sanity-check manifests vs port budgets and NIC declarations."""
     import sys
+
     import yaml
     from rich.console import Console
     from rich.table import Table
@@ -203,7 +207,7 @@ def validate(topology: str, nodes: str, tors: str, policy: str, strict: bool, ex
 
         # Export findings if requested
         if export:
-            with open(export, 'w') as f:
+            with open(export, "w") as f:
                 yaml.dump(report.model_dump(), f, default_flow_style=False, sort_keys=True)
             console.print(f"[green]✓[/green] Findings exported to {export}")
 
@@ -221,33 +225,29 @@ def validate(topology: str, nodes: str, tors: str, policy: str, strict: bool, ex
 
         # Print detailed findings grouped by section
         if report.findings:
-            console.print(f"\n[bold]Policy Validation:[/bold]")
+            console.print("\n[bold]Policy Validation:[/bold]")
             policy_findings = [f for f in report.findings if f.code.startswith("POLICY_")]
 
             if policy_findings:
                 for finding in policy_findings:
-                    severity_color = {
-                        "FAIL": "red",
-                        "WARN": "yellow",
-                        "INFO": "blue"
-                    }.get(finding.severity, "white")
+                    severity_color = {"FAIL": "red", "WARN": "yellow", "INFO": "blue"}.get(finding.severity, "white")
 
-                    console.print(f"[{severity_color}]{finding.severity}[/{severity_color}] {finding.code}: {finding.message}")
+                    console.print(
+                        f"[{severity_color}]{finding.severity}[/{severity_color}] {finding.code}: {finding.message}"
+                    )
             else:
                 console.print("[green]✓ Policy validation passed[/green]")
 
             # Print other findings
             other_findings = [f for f in report.findings if not f.code.startswith("POLICY_")]
             if other_findings:
-                console.print(f"\n[bold]Topology Validation:[/bold]")
+                console.print("\n[bold]Topology Validation:[/bold]")
                 for finding in other_findings:
-                    severity_color = {
-                        "FAIL": "red",
-                        "WARN": "yellow",
-                        "INFO": "blue"
-                    }.get(finding.severity, "white")
+                    severity_color = {"FAIL": "red", "WARN": "yellow", "INFO": "blue"}.get(finding.severity, "white")
 
-                    console.print(f"[{severity_color}]{finding.severity}[/{severity_color}] {finding.code}: {finding.message}")
+                    console.print(
+                        f"[{severity_color}]{finding.severity}[/{severity_color}] {finding.code}: {finding.message}"
+                    )
         else:
             console.print("\n[green]✓ All validation checks passed[/green]")
 
@@ -262,7 +262,7 @@ def validate(topology: str, nodes: str, tors: str, policy: str, strict: bool, ex
             console.print(f"\n[yellow]⚠[/yellow] Validation completed with {warn_count} warnings (strict mode)")
             sys.exit(2)
         else:
-            console.print(f"\n[green]✓[/green] Validation completed successfully")
+            console.print("\n[green]✓[/green] Validation completed successfully")
             sys.exit(0)
 
     except Exception as e:
@@ -293,6 +293,7 @@ def validate(topology: str, nodes: str, tors: str, policy: str, strict: bool, ex
 def cross_validate(bom: str, export: str, strict: bool) -> None:
     """Cross-validate BOM against topology/policy intent."""
     import sys
+
     import yaml
     from rich.console import Console
     from rich.table import Table
@@ -308,7 +309,7 @@ def cross_validate(bom: str, export: str, strict: bool) -> None:
         report = cross_validate_bom(bom_path=bom)
 
         # Export report
-        with open(export, 'w') as f:
+        with open(export, "w") as f:
             yaml.dump(report.model_dump(), f, default_flow_style=False, sort_keys=True)
 
         # Print summary table
@@ -326,15 +327,13 @@ def cross_validate(bom: str, export: str, strict: bool) -> None:
 
         # Print detailed findings
         if report.findings:
-            console.print(f"\n[bold]Detailed Findings:[/bold]")
+            console.print("\n[bold]Detailed Findings:[/bold]")
             for finding in report.findings:
-                severity_color = {
-                    "FAIL": "red",
-                    "WARN": "yellow",
-                    "INFO": "blue"
-                }.get(finding.severity, "white")
+                severity_color = {"FAIL": "red", "WARN": "yellow", "INFO": "blue"}.get(finding.severity, "white")
 
-                console.print(f"[{severity_color}]{finding.severity}[/{severity_color}] {finding.code}: {finding.message}")
+                console.print(
+                    f"[{severity_color}]{finding.severity}[/{severity_color}] {finding.code}: {finding.message}"
+                )
         else:
             console.print("\n[green]✓ No issues found - BOM matches topology/policy intent[/green]")
 
@@ -379,7 +378,7 @@ def cross_validate(bom: str, export: str, strict: bool) -> None:
 def roundtrip(bom: str, export: str, strict: bool) -> None:
     """Perform roundtrip processing on BOM."""
     import sys
-    import yaml
+
     from rich.console import Console
 
     console = Console()
@@ -387,6 +386,7 @@ def roundtrip(bom: str, export: str, strict: bool) -> None:
 
     try:
         from inferno_tools.cabling import roundtrip_bom
+
         roundtrip_bom(bom_path=bom, export_path=export, strict=strict)
         console.print(f"\n[green]✓[/green] Roundtrip report exported to {export}")
     except ImportError as e:
@@ -416,6 +416,7 @@ def visualize(site: Optional[str], output: str) -> None:
     """Render a simple SVG of rack grid and link classes (optional)."""
     try:
         from inferno_tools.cabling import visualize_cabling
+
         visualize_cabling(site_path=site, output_path=output)
     except Exception as e:
         click.echo(f"[visualize] Not implemented yet: {e}")

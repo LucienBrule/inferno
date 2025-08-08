@@ -1,5 +1,4 @@
 import graphviz
-
 from inferno_core.data import circles
 from inferno_core.models.circle import Circle
 

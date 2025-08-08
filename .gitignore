@@ -1,3 +1,7 @@
+outputs
+exclude
+node_modules
+secrets
 # Python-generated files
 __pycache__/
 *.py[oc]

@@ -1,13 +1,10 @@
-
-
 import graphviz
 from inferno_core.data.power import feeds, pdus, ups
-from inferno_core.models.power import PowerFeed, UPS, PDU
+from inferno_core.models.power import PDU, UPS, PowerFeed
+
 
 def render_power_topology(
-    feeds: list[PowerFeed] = feeds,
-    ups_list: list[UPS] = ups,
-    pdus_list: list[PDU] = pdus
+    feeds: list[PowerFeed] = feeds, ups_list: list[UPS] = ups, pdus_list: list[PDU] = pdus
 ) -> graphviz.Digraph:
     """
     Render the power topology for each rack:
@@ -22,12 +19,7 @@ def render_power_topology(
         rack_id = feed.rack_ids[0] if feed.rack_ids else "unknown"
         cluster_name = f"cluster_{rack_id}"
         with dot.subgraph(name=cluster_name) as c:
-            c.attr(
-                label=f"Rack: {rack_id}",
-                style="rounded",
-                color="gray",
-                rankdir="LR"
-            )
+            c.attr(label=f"Rack: {rack_id}", style="rounded", color="gray", rankdir="LR")
 
             # Power feed node
             feed_node = f"feed@{feed.id}"
@@ -36,7 +28,7 @@ def render_power_topology(
                 label=f"{feed.id}\\n{feed.circuit_type}\\n{feed.voltage}V/{feed.amperage}A",
                 shape="box",
                 style="filled",
-                fillcolor="orange"
+                fillcolor="orange",
             )
 
             # UPS node (feed A source)
@@ -44,11 +36,7 @@ def render_power_topology(
             if ups:
                 ups_node = f"ups@{ups.id}"
                 c.node(
-                    ups_node,
-                    label=f"{ups.id}\\n{ups.model}",
-                    shape="ellipse",
-                    style="filled",
-                    fillcolor="lightblue"
+                    ups_node, label=f"{ups.id}\\n{ups.model}", shape="ellipse", style="filled", fillcolor="lightblue"
                 )
                 # Edge: feed -> UPS
                 c.edge(feed_node, ups_node)
@@ -61,7 +49,7 @@ def render_power_topology(
                     label=f"{pdu.id}\\nFeed {pdu.feed}",
                     shape="ellipse",
                     style="filled",
-                    fillcolor="lightgreen"
+                    fillcolor="lightgreen",
                 )
                 if pdu.feed.upper() == "A" and ups:
                     # PDU-A is fed by the UPS

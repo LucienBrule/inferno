@@ -1,10 +1,11 @@
 from typing import List, Literal, Optional
+
 from pydantic import BaseModel
 
 
 class PowerCircuit(BaseModel):
     id: str
-    voltage: Literal[120,240]
+    voltage: Literal[120, 240]
     amperage: int
     racks: list[str]
 
@@ -14,14 +15,16 @@ class PowerFeed(BaseModel):
     circuit_type: str
     voltage: Literal[120, 240]
     amperage: int
-    phase: Literal['single', 'three']
+    phase: Literal["single", "three"]
     breaker_panel: str
     rack_ids: List[str]
     notes: Optional[str] = None
 
+
 class Outlet(BaseModel):
     type: str  # e.g., 'C13' or 'C19'
     quantity: int
+
 
 class PDU(BaseModel):
     id: str
@@ -34,6 +37,7 @@ class PDU(BaseModel):
     output_outlets: List[Outlet]
     management: str
     notes: Optional[str] = None
+
 
 class UPS(BaseModel):
     id: str

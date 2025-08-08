@@ -25,6 +25,7 @@ DEFAULT_BUDGET_PATH = Path("doctrine/power/rack-power-budget.yaml")
 # Unit conversions
 # ----------------------------
 
+
 def watts_to_btu_per_hr(watts: float) -> float:
     """Convert watts to BTU/hr (1 watt = 3.412 BTU/hr)."""
     return watts * 3.412
@@ -38,6 +39,7 @@ def btu_per_hr_to_tons(btu_hr: float) -> float:
 # ----------------------------
 # Public API
 # ----------------------------
+
 
 def estimate_cooling_by_circuit(
     *,
@@ -65,9 +67,13 @@ def estimate_cooling_by_circuit(
 
     console.print("\n[bold cyan]Inferno Cooling Estimator[/bold cyan]\n")
     for rack_id, btu, tons in results:
-        console.print(f"[green]{rack_id}[/green]: [yellow]{int(btu):,} BTU/hr[/yellow] → [magenta]{tons:.1f} tons[/magenta]")
+        console.print(
+            f"[green]{rack_id}[/green]: [yellow]{int(btu):,} BTU/hr[/yellow] → [magenta]{tons:.1f} tons[/magenta]"
+        )
 
-    console.print(f"\n[bold]Total:[/bold] {int(total_btu):,} BTU/hr → [bold magenta]{total_tons:.1f} tons[/bold magenta]\n")
+    console.print(
+        f"\n[bold]Total:[/bold] {int(total_btu):,} BTU/hr → [bold magenta]{total_tons:.1f} tons[/bold magenta]\n"
+    )
 
     if headroom == 1.0:
         headroom_note = ""
@@ -116,7 +122,7 @@ def estimate_cooling_by_load(
     for r in racks:
         feed_id = r.get("feed_id")
         watts = r.get("estimated_draw_w")
-        if isinstance(feed_id, str) and isinstance(watts, (int, float)):
+        if isinstance(feed_id, str) and isinstance(watts, int | float):
             loads[feed_id] = float(watts)
 
     if not loads:
@@ -135,9 +141,13 @@ def estimate_cooling_by_load(
 
     console.print("\n[bold cyan]Inferno Cooling Estimator[/bold cyan]\n")
     for rack_id, btu, tons in results:
-        console.print(f"[green]{rack_id}[/green]: [yellow]{int(btu):,} BTU/hr[/yellow] → [magenta]{tons:.1f} tons[/magenta]")
+        console.print(
+            f"[green]{rack_id}[/green]: [yellow]{int(btu):,} BTU/hr[/yellow] → [magenta]{tons:.1f} tons[/magenta]"
+        )
 
-    console.print(f"\n[bold]Total:[/bold] {int(total_btu):,} BTU/hr → [bold magenta]{total_tons:.1f} tons[/bold magenta]\n")
+    console.print(
+        f"\n[bold]Total:[/bold] {int(total_btu):,} BTU/hr → [bold magenta]{total_tons:.1f} tons[/bold magenta]\n"
+    )
 
     if headroom == 1.0:
         headroom_note = ""

@@ -1,12 +1,9 @@
-
-from inferno_core.data.network import network_topology
 import graphviz
+from inferno_core.data.network import network_topology
 from inferno_core.models.network import NetworkTopology
 
 
-def render_network_topology(
-        topology: NetworkTopology = network_topology
-) -> graphviz.Digraph:
+def render_network_topology(topology: NetworkTopology = network_topology) -> graphviz.Digraph:
     """
     Render the leaf–spine network topology:
     - Spine clusters in lightblue.
@@ -18,13 +15,13 @@ def render_network_topology(
     # Render spines as clusters
     for spine in topology.spines:
         with dot.subgraph(
-                name=f"cluster_{spine.id}",
-                graph_attr={
-                    "label": f"{spine.model} ({spine.id})",
-                    "style": "rounded",
-                    "color": "lightblue",
-                    "rankdir": "TB",
-                },
+            name=f"cluster_{spine.id}",
+            graph_attr={
+                "label": f"{spine.model} ({spine.id})",
+                "style": "rounded",
+                "color": "lightblue",
+                "rankdir": "TB",
+            },
         ) as c:
             for iface in spine.interfaces:
                 node_id = f"{spine.id}@{iface.name}"
@@ -36,13 +33,13 @@ def render_network_topology(
     # Render leafs as clusters
     for leaf in topology.leafs:
         with dot.subgraph(
-                name=f"cluster_{leaf.id}",
-                graph_attr={
-                    "label": f"{leaf.model} ({leaf.id})",
-                    "style": "rounded",
-                    "color": "lightgreen",
-                    "rankdir": "TB",
-                },
+            name=f"cluster_{leaf.id}",
+            graph_attr={
+                "label": f"{leaf.model} ({leaf.id})",
+                "style": "rounded",
+                "color": "lightgreen",
+                "rankdir": "TB",
+            },
         ) as c:
             for iface in leaf.interfaces:
                 node_id = f"{leaf.id}@{iface.name}"

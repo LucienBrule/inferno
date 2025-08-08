@@ -1,5 +1,5 @@
-from .rack import Rack
 from .node import Node
 from .power import PowerCircuit
+from .rack import Rack
 
-__all__ = ["Rack", "Node", "PowerCircuit"]
+__all__ = ["Node", "PowerCircuit", "Rack"]

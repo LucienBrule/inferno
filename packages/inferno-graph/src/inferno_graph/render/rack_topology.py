@@ -1,15 +1,11 @@
 import graphviz
-
 from inferno_core.data.circles import circles
 from inferno_core.data.racks import racks
 from inferno_core.models import Rack
 from inferno_core.models.circle import Circle
 
 
-def render_rack_topology(
-        racks: list[Rack] = racks,
-        circles: list[Circle] = circles
-) -> graphviz.Digraph:
+def render_rack_topology(racks: list[Rack] = racks, circles: list[Circle] = circles) -> graphviz.Digraph:
     dot = graphviz.Digraph("inferno_physical_topo", format="svg")
     dot.attr("node", shape="rectangle")
 

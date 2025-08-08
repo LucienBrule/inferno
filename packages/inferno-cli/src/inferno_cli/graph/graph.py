@@ -1,10 +1,11 @@
 import click
-
 from inferno_graph.render import (
-    render_rack_topology,
-    render_node_topology,
+    render_full_topology,
     render_logical_circles,
-    render_full_topology, render_network_topology, render_power_topology,
+    render_network_topology,
+    render_node_topology,
+    render_power_topology,
+    render_rack_topology,
 )
 
 

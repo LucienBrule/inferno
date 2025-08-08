@@ -7,6 +7,7 @@ authors = [
     { name = "Lucien Brule", email = "lucien@lucienbrule.com" }
 ]
 requires-python = ">=3.12"
+
 dependencies = [
     "graphviz>=0.21",
     "pyyaml>=6.0.2",
@@ -15,3 +16,39 @@ dependencies = [
 
 [tool.uv.workspace]
 members = ["packages/*"]
+
+[project.optional-dependencies]
+lint = [
+    "black>=24.4.2",
+    "isort>=5.13.2",
+    "flake8>=7.0.0",
+    "flake8-pyproject",
+    "mypy>=1.10.0",
+    "ruff>=0.4.0",
+]
+
+test = [
+    "pytest>=8.2.1",
+]
+
+formatter = [
+    "black",
+    "isort",
+]
+
+typecheck = [
+    "mypy",
+]
+[tool.black]
+line-length = 120
+
+[tool.isort]
+profile = "black"
+
+[tool.mypy]
+strict = true
+plugins = ["pydantic.mypy"]  # Optional but useful for pydantic v2 model support
+
+[project.entry-points."flake8.extension"]
+INF = "tools.flake8_glyphsieve.plugin:Plugin"
+

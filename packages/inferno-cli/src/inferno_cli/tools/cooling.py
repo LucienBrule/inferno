@@ -5,9 +5,11 @@ from inferno_tools.cooling import (
     estimate_cooling_measured,
 )
 
+
 @click.group()
 def cli() -> None:
     pass
+
 
 @cli.group()
 def cooling() -> None:
@@ -58,9 +60,7 @@ def cooling_by_circuit(headroom: float, ups_efficiency: float) -> None:
 )
 def cooling_by_load(budget_path: str, headroom: float, ups_efficiency: float) -> None:
     """Estimate cooling from modeled rack loads (YAML/MD budget)."""
-    estimate_cooling_by_load(
-        budget_path=budget_path, headroom=headroom, ups_efficiency=ups_efficiency
-    )
+    estimate_cooling_by_load(budget_path=budget_path, headroom=headroom, ups_efficiency=ups_efficiency)
 
 
 @cooling.command("measured")

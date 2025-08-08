@@ -2,9 +2,8 @@ import graphviz
 from inferno_core.data.circles import circles
 from inferno_core.data.nodes import nodes
 from inferno_core.data.racks import racks
-from inferno_core.models import Rack, Node
+from inferno_core.models import Node, Rack
 from inferno_core.models.circle import Circle
-
 
 
 def _render_rack_cluster(rack: Rack, circles: list[Circle], nodes: list[Node]) -> graphviz.Digraph:
@@ -28,7 +27,13 @@ def _render_rack_cluster(rack: Rack, circles: list[Circle], nodes: list[Node]) -
         circle = circle_lookup.get(cid)
         if circle and rack.id in circle.rack_ids:
             circle_node_id = f"{circle.id}@{rack.id}"
-            c.node(circle_node_id, label=f"{circle.name}\\nCircle {circle.circle}", shape="ellipse", style="filled", fillcolor="white")
+            c.node(
+                circle_node_id,
+                label=f"{circle.name}\\nCircle {circle.circle}",
+                shape="ellipse",
+                style="filled",
+                fillcolor="white",
+            )
             # For each node in this circle, if it belongs to this rack, add node and edge.
             has_local_nodes = False
             for node in nodes_by_circle.get(cid, []):
@@ -54,9 +59,7 @@ def _render_logical_circle_links(circles: list[Circle], dot: graphviz.Digraph) -
 
 
 def render_full_topology(
-        racks: list[Rack] = racks,
-        circles: list[Circle] = circles,
-        nodes: list[Node] = nodes
+    racks: list[Rack] = racks, circles: list[Circle] = circles, nodes: list[Node] = nodes
 ) -> graphviz.Digraph:
     dot = graphviz.Digraph("inferno_full_topo", format="svg")
     dot.attr("node", shape="plaintext")
@@ -77,7 +80,7 @@ def render_full_topology(
 
     # group anchors by row to enforce grid alignment
     for i in range(0, len(rack_ids), num_cols):
-        row = rack_ids[i:i+num_cols]
+        row = rack_ids[i : i + num_cols]
         with dot.subgraph() as s:
             s.attr(rank="same")
             for rid in row:
