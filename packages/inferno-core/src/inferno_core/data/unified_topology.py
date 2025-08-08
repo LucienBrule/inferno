@@ -5,14 +5,10 @@ This loader can handle the current NetworkTopology format and automatically deri
 capacity-level information for cabling calculations.
 """
 
-from __future__ import annotations
-
 from pathlib import Path
 from typing import List
 
 import yaml
-from pydantic import ValidationError
-
 from inferno_core.models.unified_topology import (
     UnifiedInterface,
     UnifiedPorts,
@@ -21,6 +17,7 @@ from inferno_core.models.unified_topology import (
     UnifiedTopology,
     UnifiedWan,
 )
+from pydantic import ValidationError
 
 
 def _read_yaml(path: Path | str) -> dict | list:

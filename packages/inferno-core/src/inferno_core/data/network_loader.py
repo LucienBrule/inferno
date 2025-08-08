@@ -5,15 +5,12 @@ This module provides robust YAML loaders for cabling-related manifests
 used by inferno-cli tools cabling calculate|validate|visualize.
 """
 
-from __future__ import annotations
-
 from pathlib import Path
 from typing import Any
 
 import yaml
-from pydantic import TypeAdapter, ValidationError
-
 from inferno_core.models.records import NodeRec, SiteRec, SpineRec, TopologyRec, TorRec
+from pydantic import TypeAdapter, ValidationError
 
 
 def _read_yaml(path: Path | str) -> dict | list:

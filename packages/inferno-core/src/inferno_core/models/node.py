@@ -1,6 +1,5 @@
-from pydantic import BaseModel
-
 from inferno_core.models.chassis import Chassis
+from pydantic import BaseModel
 
 
 class Node(BaseModel):

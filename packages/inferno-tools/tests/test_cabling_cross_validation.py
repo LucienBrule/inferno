@@ -6,8 +6,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 import yaml
+from inferno_core.models.cross import CrossReport
 from inferno_tools.cabling.cross_validate import (
-    CrossReport,
     _aggregate_intent_to_class_structure,
     _derive_intent_links,
     _normalize_bom_to_class_structure,

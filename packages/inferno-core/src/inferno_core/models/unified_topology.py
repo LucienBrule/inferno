@@ -5,13 +5,11 @@ This model supports both interface-level connectivity (NetworkTopology) and
 rack-level capacity planning (TopologyRec) use cases.
 """
 
-from __future__ import annotations
-
 from typing import List, Optional
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
 from inferno_core.models.network import NetworkTopology
 from inferno_core.models.records import TopologyRec
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class UnifiedInterface(BaseModel):
@@ -183,7 +181,7 @@ class UnifiedTopology(BaseModel):
         return TopologyRec(spine=spine_rec, racks=rack_recs, wan=wan_rec)
 
     @classmethod
-    def from_network_topology(cls, nt: NetworkTopology) -> UnifiedTopology:
+    def from_network_topology(cls, nt: NetworkTopology) -> "UnifiedTopology":
         """Create UnifiedTopology from NetworkTopology."""
         spines = []
         for spine in nt.spines:
@@ -208,7 +206,7 @@ class UnifiedTopology(BaseModel):
         return cls(spines=spines, leafs=leafs)
 
     @classmethod
-    def from_topology_rec(cls, tr: TopologyRec) -> UnifiedTopology:
+    def from_topology_rec(cls, tr: TopologyRec) -> "UnifiedTopology":
         """Create UnifiedTopology from TopologyRec."""
         # Convert spine
         spine_ports = UnifiedPorts(qsfp28_total=tr.spine.ports.qsfp28_total)

@@ -5,65 +5,22 @@ Provides deterministic validation of manifests, topology, and cabling policy
 against Inferno's network design rules before calculation/installation.
 """
 
-from __future__ import annotations
-
-from typing import Literal
-
 import yaml
-from pydantic import BaseModel, ConfigDict, Field
-
 from inferno_core.data.network_loader import (
     load_nodes,
     load_site,
     load_topology,
     load_tors,
 )
+from inferno_core.models.cabling_report import Finding, Report
 from inferno_core.models.records import NodeRec, SiteRec, TopologyRec, TorRec
 
 # Import shared geometry helpers
-try:
-    from inferno_tools.cabling.common import (
-        apply_slack,
-        compute_rack_distance_m,
-        select_length_bin,
-    )
-except ImportError:
-    # Fallback implementations for when inferno-tools is not available
-    def compute_rack_distance_m(grid_a: tuple[int, int], grid_b: tuple[int, int], tile_m: float) -> float:
-        dx = abs(grid_a[0] - grid_b[0])
-        dy = abs(grid_a[1] - grid_b[1])
-        return (dx + dy) * tile_m
-
-    def apply_slack(distance_m: float, slack_factor: float) -> float:
-        return distance_m * slack_factor
-
-    def select_length_bin(distance_m: float, bins_m) -> int | None:
-        for b in sorted(bins_m):
-            if distance_m <= b:
-                return b
-        return None
-
-
-# Type definitions
-Severity = Literal["FAIL", "WARN", "INFO"]
-
-
-class Finding(BaseModel):
-    """A single validation finding with severity, code, message, and context."""
-
-    model_config = ConfigDict(extra="ignore")
-    severity: Severity
-    code: str
-    message: str
-    context: dict = Field(default_factory=dict)
-
-
-class Report(BaseModel):
-    """Complete validation report with summary and findings."""
-
-    model_config = ConfigDict(extra="ignore")
-    summary: dict
-    findings: list[Finding]
+from inferno_tools.cabling.common import (
+    apply_slack,
+    compute_rack_distance_m,
+    select_length_bin,
+)
 
 
 def _load_policy(policy_path: str | None = None) -> dict:

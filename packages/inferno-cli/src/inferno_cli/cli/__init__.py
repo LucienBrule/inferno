@@ -1,5 +1,4 @@
 import click
-
 from inferno_cli.graph.graph import graph
 from inferno_cli.tools.tools import tools
 

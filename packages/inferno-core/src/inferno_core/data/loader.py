@@ -1,12 +1,18 @@
 import warnings
 from pathlib import Path
-from typing import Any, TypeVar, overload
+from typing import Any, Generic, TypeVar, overload
 
 import yaml
-from pydantic import TypeAdapter, ValidationError
+from pydantic import BaseModel, TypeAdapter, ValidationError
+from pydantic import BaseModel as GenericModel
 
 T = TypeVar("T")
-U = TypeVar("U")
+U = TypeVar("U", bound=BaseModel)
+
+
+class MapOf(GenericModel, Generic[U]):
+    root: dict[str, U]
+
 
 # -------------------------------
 # Internal raw YAML reader (single source of truth)
@@ -88,9 +94,14 @@ def load_yaml_list[U](path: Path | str, item_model: type[U]) -> list[U]:
     return load_yaml_typed(path, adapter=TypeAdapter(list[item_model]))  # type: ignore[index]
 
 
-def load_yaml_dict_values[U](path: Path | str, value_model: type[U]) -> dict[str, U]:
-    """Load a YAML mapping[str, object] into Dict[str, value_model]."""
-    return load_yaml_typed(path, adapter=TypeAdapter(dict[str, value_model]))  # type: ignore[index]
+def load_yaml_dict_values[U: BaseModel](path: Path | str, value_model: type[U]) -> MapOf[U]:
+    """Load a YAML mapping[str, object] into a typed Pydantic model wrapping the mapping as `.root` property.
+
+    Returns:
+        MapOf[U]: A Pydantic model with `.root` containing the mapping of str to value_model.
+    """
+    data = load_yaml_typed(path, adapter=TypeAdapter(dict[str, value_model]))  # type: ignore[index]
+    return MapOf[U](root=data)
 
 
 # -------------------------------

@@ -5,10 +5,8 @@ This module provides functionality to reconcile calculated BOM against declared 
 mismatches in media/length bins.
 """
 
-from __future__ import annotations
-
 from pathlib import Path
-from typing import Any, Dict, List, Literal
+from typing import Any, Dict, List
 
 import yaml
 from inferno_core.data.network_loader import (
@@ -17,40 +15,8 @@ from inferno_core.data.network_loader import (
     load_topology,
     load_tors,
 )
-from pydantic import BaseModel, ConfigDict, Field
-
-# Import policy loading from existing cabling module
-try:
-    from inferno_tools.cabling import load_cabling_policy
-except ImportError:
-    # Fallback for testing
-    def load_cabling_policy(path: str) -> Dict[str, Any]:
-        with open(path, "r") as f:
-            return yaml.safe_load(f)
-
-
-Severity = Literal["FAIL", "WARN", "INFO"]
-
-
-class CrossFinding(BaseModel):
-    """A single cross-validation finding."""
-
-    model_config = ConfigDict(extra="ignore")
-
-    severity: Severity
-    code: str
-    message: str
-    context: dict = Field(default_factory=dict)
-
-
-class CrossReport(BaseModel):
-    """Complete cross-validation report."""
-
-    model_config = ConfigDict(extra="ignore")
-
-    summary: dict
-    findings: list[CrossFinding]
-    mapping_stats: dict
+from inferno_core.models.cross import CrossFinding, CrossReport
+from inferno_core.data.cabling_policy import load_cabling_policy
 
 
 def _load_bom_yaml(bom_path: Path | str) -> Dict[str, Any]:
@@ -443,7 +409,7 @@ def _reconcile_bom_vs_intent(
 
 def cross_validate_bom(
     bom_path: Path | str = Path("outputs/cabling_bom.yaml"),
-    policy_path: Path | str | None = None,
+    policy_path: Path | str = Path("doctrine/network/cabling-policy.yaml"),
 ) -> CrossReport:
     """Cross-validate BOM against topology/policy intent.
 
@@ -454,10 +420,6 @@ def cross_validate_bom(
     Returns:
         CrossReport with findings and statistics
     """
-    # Set default policy path
-    if policy_path is None:
-        policy_path = Path("doctrine/network/cabling-policy.yaml")
-
     # Load all required data
     try:
         # Load manifests

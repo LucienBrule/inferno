@@ -7,6 +7,7 @@ Covers all validation scenarios specified in TASK.cabling.validation.md.
 from unittest.mock import patch
 
 import pytest
+from inferno_core.models.cabling_report import Report
 from inferno_core.models.records import (
     NicRec,
     NodeRec,
@@ -21,7 +22,6 @@ from inferno_core.models.records import (
     TorRec,
 )
 from inferno_core.validation.cabling import (
-    Report,
     run_cabling_validation,
     validate_compatibility,
     validate_completeness,

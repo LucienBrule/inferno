@@ -25,8 +25,8 @@ from inferno_tools.cabling import (
     _validate_bom,
     _with_spares,
     calculate_cabling_bom,
-    load_cabling_policy,
 )
+from inferno_core.data.cabling_policy import load_cabling_policy
 
 
 class TestManhattanDistance:
