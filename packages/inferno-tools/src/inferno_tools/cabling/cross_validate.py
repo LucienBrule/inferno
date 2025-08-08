@@ -381,7 +381,8 @@ def _reconcile_bom_vs_intent(
                             CrossFinding(
                                 severity=severity,
                                 code=code,
-                                message=f"{class_name} {cable_type}: BOM uses {bom_bin}m bin, intent expects {closest_intent_bin}m",
+                                message=f"{class_name} {cable_type}:"
+                                f" BOM uses {bom_bin}m bin, intent expects {closest_intent_bin}m",
                                 context={
                                     "class": class_name,
                                     "cable_type": cable_type,
@@ -405,7 +406,8 @@ def _reconcile_bom_vs_intent(
                         CrossFinding(
                             severity="FAIL",
                             code="MISSING_LINK",
-                            message=f"{class_name} requires {required_count} × {cable_type} @ {length_bin} m; BOM provides 0",
+                            message=f"{class_name} requires {required_count} × {cable_type} @ {length_bin} m;"
+                            f" BOM provides 0",
                             context={
                                 "class": class_name,
                                 "cable_type": cable_type,
@@ -424,7 +426,8 @@ def _reconcile_bom_vs_intent(
                         CrossFinding(
                             severity="WARN",
                             code="PHANTOM_ITEM",
-                            message=f"{class_name} BOM has {provided_count} × {cable_type} @ {length_bin} m; intent requires 0",
+                            message=f"{class_name} BOM has {provided_count} × {cable_type} @ {length_bin} m;"
+                            f" intent requires 0",
                             context={
                                 "class": class_name,
                                 "cable_type": cable_type,

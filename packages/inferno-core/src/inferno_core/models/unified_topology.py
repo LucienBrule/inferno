@@ -10,6 +10,8 @@ from __future__ import annotations
 from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
+from inferno_core.models.network import NetworkTopology
+from inferno_core.models.records import TopologyRec
 
 
 class UnifiedInterface(BaseModel):

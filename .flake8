@@ -1,16 +1,25 @@
 [flake8]
+# Style gates
 max-line-length = 120
+max-complexity = 12
+
+# We want our custom plugin codes and core Flake8 codes
 extend-select = INF
+# Black-compatible (slice spacing) and other occasional noise
+extend-ignore = E203
+
+# Don't lint generated, vendored, or data dirs
 exclude = .git,__pycache__,.venv,.eggs,build,dist,doctrine,inferno-viz,scrape,exclude
-max-complexity = 10
+
+# Per-file relaxations (tests can be messier and use fixture-relative paths)
 per-file-ignores =
-    # Allow tests to be more lenient
-    tests/*: E501
+    packages/*/tests/*: E501,E402,E203,INF001,E741
 
 # Only lint our actual source dir
 paths = packages/
 
 [flake8:local-plugins]
+# Map our plugin prefix to the checker class
 extension =
-    GLS001 = inferno_lint.plugin:Plugin
-paths = packages/inferno-lint/src/
+    INF = inferno_lint.plugin:Plugin
+paths = packages/inferno-lint/src

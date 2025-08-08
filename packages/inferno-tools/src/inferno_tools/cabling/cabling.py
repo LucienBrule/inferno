@@ -162,16 +162,38 @@ def estimate_cabling_heuristic(
 
     console.print("\n[bold cyan]Inferno Cabling Estimator (heuristic)[/bold cyan]\n")
     console.print(
-        f"[yellow]Leaf → Node (SFP28 25G):[/yellow] {total_leaf_to_node}  [dim](with spares: {total_leaf_to_node_sp})[/dim]"
+        f"[yellow]"
+        f"Leaf → Node (SFP28 25G):"
+        f"[/yellow]"
+        f" {total_leaf_to_node}  "
+        f"[dim]"
+        f"(with spares: {total_leaf_to_node_sp})"
+        f"[/dim]"
     )
     console.print(
-        f"[yellow]Leaf → Spine (QSFP28 100G):[/yellow] {total_leaf_to_spine}  [dim](with spares: {total_leaf_to_spine_sp})[/dim]"
+        f"[yellow]"
+        f"Leaf → Spine (QSFP28 100G):"
+        f"[/yellow]"
+        f" {total_leaf_to_spine} "
+        f"[dim]"
+        f"(with spares: {total_leaf_to_spine_sp})"
+        f"[/dim]"
     )
     console.print(f"[yellow]Mgmt (RJ45 Cat6A):[/yellow] {total_mgmt}  [dim](with spares: {total_mgmt_sp})[/dim]")
     console.print(f"[yellow]WAN (RJ45 Cat6A):[/yellow] {total_wan}  [dim](with spares: {total_wan_sp})[/dim]")
 
     console.print(
-        "\n[dim]Policy:[/dim] {p}\n[dim]Bins — SFP28:[/dim] {b1}  [dim]QSFP28:[/dim] {b2}  [dim]RJ45:[/dim] {b3}\n".format(
+        "\n"
+        "[dim]"
+        "Policy:"
+        "[/dim]"
+        " {p}\n"
+        "[dim]Bins — SFP28:[/dim]"
+        " {b1}  "
+        "[dim]QSFP28:[/dim]"
+        " {b2}  "
+        "[dim]RJ45:[/dim]"
+        " {b3}\n".format(
             p=policy_path,
             b1=",".join(map(str, sfp28_bins)),
             b2=",".join(map(str, qsfp28_bins)),
@@ -179,7 +201,11 @@ def estimate_cabling_heuristic(
         )
     )
     console.print(
-        f"[dim]Assumes {num_racks_eff} racks × {nodes_per_rack_eff} nodes per rack; {uplinks_per_rack_eff} QSFP28 uplinks per ToR; {mgmt_rj45_per_node_eff} RJ45 mgmt per node; {wan_cat6a_eff} WAN trunks (from policy/site-defaults).[/dim]\n"
+        f"[dim]"
+        f"Assumes {num_racks_eff} racks × {nodes_per_rack_eff} nodes per rack;"
+        f" {uplinks_per_rack_eff} QSFP28 uplinks per ToR; {mgmt_rj45_per_node_eff} RJ45 mgmt per node;"
+        f" {wan_cat6a_eff} WAN trunks (from policy/site-defaults)."
+        f"[/dim]\n"
     )
 
 
@@ -263,7 +289,7 @@ def _build_network_links(
                     leaf_id, leaf_port = connection_parts
 
                     # Find the leaf
-                    leaf = next((l for l in leafs if l["id"] == leaf_id), None)
+                    leaf = next((lf for lf in leafs if lf["id"] == leaf_id), None)
                     if leaf:
                         leaf_rack = leaf.get("rack_id")
 
@@ -446,7 +472,9 @@ def calculate_cabling_bom(
         return
 
     console.print(
-        f"[green]✓[/green] Loaded topology: {len(topology.get('leafs', []))} ToRs, {len(topology.get('spines', []))} spines"
+        f"[green]✓[/green]"
+        f" Loaded topology: {len(topology.get('leafs', []))}"
+        f" ToRs, {len(topology.get('spines', []))} spines"
     )
     console.print(f"[green]✓[/green] Loaded site: {len(site.get('racks', []) if site else [])} racks")
 

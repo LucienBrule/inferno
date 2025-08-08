@@ -157,7 +157,12 @@ def validate_ports(topology: TopologyRec, tors: dict[str, TorRec], nodes: list[N
                 Finding(
                     severity="FAIL",
                     code="PORT_CAPACITY_TOR_SFP28",
-                    message=f"rack {rack.rack_id} requires {required_sfp28} SFP28 ports, ToR provides {available_sfp28} (deficit {deficit})",
+                    message=(
+                        f"rack {rack.rack_id}"
+                        f" requires {required_sfp28} SFP28 ports,"
+                        f" ToR provides {available_sfp28}"
+                        f" (deficit {deficit})"
+                    ),
                     context={
                         "rack_id": rack.rack_id,
                         "required_sfp28": required_sfp28,
@@ -179,7 +184,12 @@ def validate_ports(topology: TopologyRec, tors: dict[str, TorRec], nodes: list[N
                     Finding(
                         severity="FAIL",
                         code="PORT_CAPACITY_TOR_QSFP28",
-                        message=f"rack {rack.rack_id} requires {required_qsfp28} QSFP28 uplinks, ToR provides {available_qsfp28} (deficit {deficit})",
+                        message=(
+                            f"rack {rack.rack_id}"
+                            f" requires {required_qsfp28} QSFP28 uplinks,"
+                            f" ToR provides {available_qsfp28}"
+                            f" (deficit {deficit})"
+                        ),
                         context={
                             "rack_id": rack.rack_id,
                             "required_qsfp28": required_qsfp28,
@@ -343,7 +353,12 @@ def validate_oversubscription(
                         Finding(
                             severity="WARN",
                             code="OVERSUB_RATIO",
-                            message=f"rack {rack.rack_id} edge {edge_bw_gbps} Gbps, uplink {uplink_bw_gbps} Gbps → {ratio:.1f}:1 exceeds policy {max_ratio}:1",
+                            message=(
+                                f"rack {rack.rack_id}"
+                                f" edge {edge_bw_gbps} Gbps,"
+                                f" uplink {uplink_bw_gbps} Gbps →"
+                                f" {ratio:.1f}:1 exceeds policy {max_ratio}:1"
+                            ),
                             context={
                                 "rack_id": rack.rack_id,
                                 "edge_gbps": edge_bw_gbps,
@@ -358,7 +373,12 @@ def validate_oversubscription(
                         Finding(
                             severity="FAIL",
                             code="OVERSUB_RATIO_CRITICAL",
-                            message=f"rack {rack.rack_id} edge {edge_bw_gbps} Gbps, uplink {uplink_bw_gbps} Gbps → {ratio:.1f}:1 critically exceeds policy {max_ratio}:1",
+                            message=(
+                                f"rack {rack.rack_id}"
+                                f" edge {edge_bw_gbps} Gbps,"
+                                f" uplink {uplink_bw_gbps} Gbps →"
+                                f" {ratio:.1f}:1 critically exceeds policy {max_ratio}:1"
+                            ),
                             context={
                                 "rack_id": rack.rack_id,
                                 "edge_gbps": edge_bw_gbps,
@@ -386,7 +406,7 @@ def validate_completeness(
                 Finding(
                     severity="FAIL",
                     code="COMPLETENESS_MISSING_TOR",
-                    message=f"topology rack {rack.rack_id} references unknown ToR {rack.tor_id}",
+                    message=f"topology rack {rack.rack_id}" f" references unknown ToR {rack.tor_id}",
                     context={"rack_id": rack.rack_id, "tor_id": rack.tor_id},
                 )
             )
@@ -395,7 +415,9 @@ def validate_completeness(
                 Finding(
                     severity="FAIL",
                     code="COMPLETENESS_TOR_RACK_MISMATCH",
-                    message=f"ToR {rack.tor_id} rack_id {tor.rack_id} doesn't match topology rack_id {rack.rack_id}",
+                    message=(
+                        f"ToR {rack.tor_id}" f" rack_id {tor.rack_id}" f" doesn't match topology rack_id {rack.rack_id}"
+                    ),
                     context={"tor_id": rack.tor_id, "tor_rack_id": tor.rack_id, "topology_rack_id": rack.rack_id},
                 )
             )
@@ -496,7 +518,11 @@ def validate_lengths(
                             Finding(
                                 severity="FAIL",
                                 code="LENGTH_EXCEEDS_MAX_BIN",
-                                message=f"node {node.id} SFP28 requires {distance:.1f}m but exceeds maximum bin {max(bins)}m",
+                                message=(
+                                    f"node {node.id}"
+                                    f" SFP28 requires {distance:.1f}m"
+                                    f" but exceeds maximum bin {max(bins)}m"
+                                ),
                                 context={
                                     "node_id": node.id,
                                     "rack_id": rack.rack_id,
@@ -514,7 +540,10 @@ def validate_lengths(
                                 Finding(
                                     severity="FAIL",
                                     code="LENGTH_EXCEEDS_DAC_NO_AOC_BINS",
-                                    message=f"node {node.id} SFP28 requires {distance:.1f}m, exceeds DAC limit {dac_max}m but no AOC/fiber bins configured",
+                                    message=(
+                                        f"node {node.id} SFP28 requires {distance:.1f}m,"
+                                        f" exceeds DAC limit {dac_max}m but no AOC/fiber bins configured"
+                                    ),
                                     context={
                                         "node_id": node.id,
                                         "rack_id": rack.rack_id,
@@ -553,7 +582,10 @@ def validate_lengths(
                 Finding(
                     severity="FAIL",
                     code="LENGTH_EXCEEDS_MAX_BIN",
-                    message=f"rack {rack.rack_id} uplinks require {cable_length:.1f}m but exceed maximum bin {max(bins)}m",
+                    message=(
+                        f"rack {rack.rack_id} uplinks require {cable_length:.1f}m"
+                        f" but exceed maximum bin {max(bins)}m"
+                    ),
                     context={
                         "rack_id": rack.rack_id,
                         "distance_m": cable_length,
@@ -570,7 +602,12 @@ def validate_lengths(
                     Finding(
                         severity="FAIL",
                         code="LENGTH_EXCEEDS_DAC_NO_AOC_BINS",
-                        message=f"rack {rack.rack_id} uplinks require {cable_length:.1f}m, exceed DAC limit {dac_max}m but no AOC/fiber bins configured",
+                        message=(
+                            f"rack {rack.rack_id} uplinks"
+                            f" require {cable_length:.1f}m,"
+                            f" exceed DAC limit {dac_max}m"
+                            f" but no AOC/fiber bins configured"
+                        ),
                         context={
                             "rack_id": rack.rack_id,
                             "distance_m": cable_length,
@@ -605,7 +642,10 @@ def validate_lengths(
                             Finding(
                                 severity="WARN",
                                 code="RJ45_BIN_GT_100M",
-                                message=f"node {node.id} RJ45 connection uses bin {selected_bin}m > 100m (speed may downshift)",
+                                message=(
+                                    f"node {node.id}"
+                                    f" RJ45 connection uses bin {selected_bin}m > 100m (speed may downshift)"
+                                ),
                                 context={
                                     "node_id": node.id,
                                     "rack_id": rack.rack_id,
@@ -620,7 +660,11 @@ def validate_lengths(
                             Finding(
                                 severity="FAIL",
                                 code="LENGTH_EXCEEDS_MAX_BIN",
-                                message=f"node {node.id} RJ45 requires {mgmt_distance:.1f}m but exceeds maximum bin {max(rj45_bins)}m",
+                                message=(
+                                    f"node {node.id}"
+                                    f" RJ45 requires {mgmt_distance:.1f}m"
+                                    f" but exceeds maximum bin {max(rj45_bins)}m"
+                                ),
                                 context={
                                     "node_id": node.id,
                                     "rack_id": rack.rack_id,
@@ -670,7 +714,10 @@ def validate_redundancy(
                     Finding(
                         severity="FAIL",
                         code="REDUNDANCY_TOR_UPLINKS",
-                        message=f"rack {rack.rack_id} has {rack.uplinks_qsfp28} uplinks, minimum {min_uplinks} required (shortfall {shortfall})",
+                        message=(
+                            f"rack {rack.rack_id} has {rack.uplinks_qsfp28} uplinks,"
+                            f" minimum {min_uplinks} required (shortfall {shortfall})"
+                        ),
                         context={
                             "rack_id": rack.rack_id,
                             "uplinks": rack.uplinks_qsfp28,
@@ -735,7 +782,10 @@ def validate_policy_sanity(policy: dict) -> list[Finding]:
                     Finding(
                         severity="FAIL",
                         code="POLICY_BINS_INVALID",
-                        message=f"media_rules.{media_type}.bins_m contains non-integer or non-positive values: {invalid_bins}",
+                        message=(
+                            f"media_rules.{media_type}.bins_m"
+                            f" contains non-integer or non-positive values: {invalid_bins}"
+                        ),
                         context={"media_type": media_type, "invalid_values": invalid_bins},
                     )
                 )
@@ -778,7 +828,10 @@ def validate_policy_sanity(policy: dict) -> list[Finding]:
                     Finding(
                         severity="WARN",
                         code="POLICY_DAC_MAX_MISSING",
-                        message=f"media_rules.{media_type}.dac_max_m missing, will assume smallest bin as soft threshold",
+                        message=(
+                            f"media_rules.{media_type}.dac_max_m missing,"
+                            f" will assume smallest bin as soft threshold"
+                        ),
                         context={"media_type": media_type, "smallest_bin": min(bins) if bins else None},
                     )
                 )
@@ -797,7 +850,10 @@ def validate_policy_sanity(policy: dict) -> list[Finding]:
                         Finding(
                             severity="WARN",
                             code="POLICY_DAC_MAX_LT_SMALLEST_BIN",
-                            message=f"media_rules.{media_type}.dac_max_m ({dac_max}) is less than smallest bin ({min(bins)})",
+                            message=(
+                                f"media_rules.{media_type}.dac_max_m"
+                                f" ({dac_max}) is less than smallest bin ({min(bins)})"
+                            ),
                             context={"media_type": media_type, "dac_max_m": dac_max, "smallest_bin": min(bins)},
                         )
                     )

@@ -32,4 +32,5 @@ __all__ = [
     "cross_validate_bom",
     "estimate_cabling_heuristic",
     "load_cabling_policy",
+    "roundtrip_bom",
 ]
