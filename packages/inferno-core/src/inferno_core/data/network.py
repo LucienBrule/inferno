@@ -4,7 +4,7 @@ from inferno_core.data.loader import load_yaml_file
 from inferno_core.models.network import NetworkTopology
 
 
-def load_network_topology(path: Path = Path("doctrine/network/topology.yaml")) -> NetworkTopology:
+def load_network_topology(path: Path | str = Path("doctrine/network/topology.yaml")) -> NetworkTopology:
     try:
         # Try to load using unified topology loader first
         from inferno_core.data.unified_topology import load_topology_as_network_topology

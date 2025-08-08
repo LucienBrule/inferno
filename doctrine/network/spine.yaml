@@ -1,0 +1,7 @@
+# spine.yaml defines network spine switch(es)
+
+spines:
+  - id: "spine-1"
+    model: "Mellanox SN2700"
+    ports:
+      qsfp28_total: 32

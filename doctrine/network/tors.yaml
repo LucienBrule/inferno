@@ -1,34 +1,27 @@
 # Top-of-rack and spine switch configurations
 # Defines switch models and port capacities
 
-tors:
-  - id: "tor-west-1"
-    rack_id: "rack-1"
-    model: "Mellanox SN2410"
-    ports:
-      sfp28_total: 48
-      qsfp28_total: 4
-  - id: "tor-east-1"
-    rack_id: "rack-2"
-    model: "Mellanox SN2410"
-    ports:
-      sfp28_total: 48
-      qsfp28_total: 4
-  - id: "tor-north-1"
-    rack_id: "rack-3"
-    model: "Mellanox SN2410"
-    ports:
-      sfp28_total: 48
-      qsfp28_total: 4
-  - id: "tor-crypt-1"
-    rack_id: "rack-4"
-    model: "Mellanox SN2410"
-    ports:
-      sfp28_total: 48
-      qsfp28_total: 4
-
-spines:
-  - id: "spine-1"
-    model: "Mellanox SN2700"
-    ports:
-      qsfp28_total: 32
+- id: "tor-west-1"
+  rack_id: "rack-1"
+  model: "Mellanox SN2410"
+  ports:
+    sfp28_total: 48
+    qsfp28_total: 4
+- id: "tor-east-1"
+  rack_id: "rack-2"
+  model: "Mellanox SN2410"
+  ports:
+    sfp28_total: 48
+    qsfp28_total: 4
+- id: "tor-north-1"
+  rack_id: "rack-3"
+  model: "Mellanox SN2410"
+  ports:
+    sfp28_total: 48
+    qsfp28_total: 4
+- id: "tor-crypt-1"
+  rack_id: "rack-4"
+  model: "Mellanox SN2410"
+  ports:
+    sfp28_total: 48
+    qsfp28_total: 4

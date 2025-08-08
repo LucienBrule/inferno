@@ -1,19 +1,24 @@
 import csv
-from pathlib import Path
-from typing import List, Dict, Any, Optional
+from typing import List, Optional
 
 import yaml
 
-from inferno_core.data.cabling_policy import _load_yaml, load_cabling_policy
+from inferno_core.codebase.debug import spy_enabled, spy_trace, BaseSpyObject, SpyCablePolicy, SpyCableBom, \
+    SpyCableTors, SpyCableNodes, SpyCableTopology, SpyCableLinkList
+from inferno_core.data.cabling_policy import load_cabling_policy_typed
+from inferno_core.data.network import load_network_topology
+from inferno_core.data.network_loader import load_site, load_nodes
+from inferno_core.data.tors import load_tors_typed
 from inferno_tools.cabling import _with_spares, _build_network_links
 from inferno_tools.cabling.cabling import console
 
 
+@spy_trace
 def _aggregate_cable_bom(
-        links: List[Dict[str, Any]], policy: Dict[str, Any], spares_fraction: float, length_bins_m: List[int]
-) -> Dict[str, Any]:
+        links: SpyCableLinkList, policy: SpyCablePolicy, spares_fraction: float, length_bins_m: List[int]
+) -> SpyCableBom:
     """Aggregate links into BOM by cable type and length bin."""
-    bom = {}
+    bom = SpyCableBom().from_any({})
 
     # Count cables by type and length bin
     for link in links:
@@ -38,11 +43,11 @@ def _aggregate_cable_bom(
 
 
 def _validate_bom(
-        topology: Dict[str, Any],
-        tors: Dict[str, Any],
-        nodes: Dict[str, Any],
-        links: List[Dict[str, Any]],
-        policy: Dict[str, Any],
+        topology: SpyCableTopology,
+        tors: SpyCableTors,
+        nodes: SpyCableNodes,
+        links: SpyCableLinkList,
+        policy: SpyCablePolicy,
 ) -> List[str]:
     """Validate BOM against port capacities and other constraints."""
     warnings = []
@@ -68,8 +73,12 @@ def _validate_bom(
 
 
 def _export_bom(
-        bom: Dict[str, Any], warnings: List[str], export_path: str, export_format: str, policy: Dict[str, Any]
+        bom: SpyCableBom, warnings: List[str], export_path: str, export_format: str, policy: SpyCablePolicy
 ) -> None:
+
+    bom = SpyCableBom.from_any(bom)
+    policy = SpyCablePolicy.from_any(policy)
+
     """Export BOM to YAML or CSV format."""
     # Prepare metadata
     metadata = {
@@ -117,16 +126,37 @@ def calculate_cabling_bom(
     """
     console.print("\n[bold cyan]Cabling BOM Calculator[/bold cyan]")
 
-    # Load all required data using raw YAML loading
-    try:
-        topology = _load_yaml(topology_path)
-        tors = _load_yaml(tors_path) if Path(tors_path).exists() else {}
-        nodes = _load_yaml(nodes_path) if Path(nodes_path).exists() else {}
-        site = _load_yaml(site_path) if site_path and Path(site_path).exists() else None
-        policy = load_cabling_policy(policy_path)
-    except Exception as e:
-        console.print(f"[red]Error loading data: {e}[/red]")
-        return
+
+    topology = load_network_topology(topology_path)
+    tors = load_tors_typed(tors_path)
+    nodes = load_nodes(nodes_path)
+    site = load_site(site_path)
+    policy = load_cabling_policy_typed(policy_path)
+
+    if spy_enabled():
+        console.print(f"[red]DEBUG print objects and values [/red]")
+        console.print(f"[pink]topology: {topology} [/pink]\n")
+        console.print(f"[pink]tors: {tors} [/pink]\n")
+        console.print(f"[pink]nodes: {nodes} [/pink]\n")
+        console.print(f"[pink]site: {site} [/pink]\n")
+        console.print(f"[pink]policy: {policy} [/pink]\n")
+
+    if spy_enabled():
+        console.print(f"[red]Injecting SPY Objects[/red]")
+        topology = SpyCableTopology.from_any(topology)
+        tors = [SpyCableTors.from_any(t) for t in tors]
+        nodes = [SpyCableNodes.from_any(n) for n in nodes]
+        site = BaseSpyObject.from_any(site)
+        policy = SpyCablePolicy.from_any(policy)
+        console.print(f"[red]DONE Injecting SPY Objects[/red]")
+
+    if spy_enabled():
+        console.print(f"[red]DEBUG print objects and values [/red]")
+        console.print(f"[pink]topology: {topology} [/pink]\n")
+        console.print(f"[pink]tors: {tors} [/pink]\n")
+        console.print(f"[pink]nodes: {nodes} [/pink]\n")
+        console.print(f"[pink]site: {site} [/pink]\n")
+        console.print(f"[pink]policy: {policy} [/pink]\n")
 
     console.print(
         f"[green]✓[/green]"
@@ -141,6 +171,8 @@ def calculate_cabling_bom(
 
     # Aggregate by cable type and length bin
     bom = _aggregate_cable_bom(links, policy, spares_fraction, length_bins_m)
+    console.print(f"[green]√[/green] Aggregated BOM into {len(bom)} cable types and {len(links)} length bins")
+
 
     # Validate the results
     warnings = _validate_bom(topology, tors, nodes, links, policy)
@@ -164,8 +196,8 @@ def roundtrip_bom(*, bom_path: str, export_path: str, strict: bool = False) -> N
     import yaml
 
     try:
-        # Use existing loader for consistency
-        bom = _load_yaml(bom_path)
+        # make a bom varaible from SpyCableBom.from_any( <dict from yaml w/ path> )
+        bom = SpyCableBom.from_any(yaml.safe_load(Path(bom_path).read_text(encoding="utf-8")))
     except Exception as e:
         raise RuntimeError(f"Failed to load BOM file '{bom_path}': {e}")
     if not isinstance(bom, dict) or not bom:
