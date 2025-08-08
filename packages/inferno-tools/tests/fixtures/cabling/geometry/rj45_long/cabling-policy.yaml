@@ -1,0 +1,32 @@
+# Cabling policy for rj45_long test
+# Tests RJ45 connections using bins > 100m to trigger RJ45_BIN_GT_100M warning
+
+defaults:
+  nodes_25g_per_node: 2
+  mgmt_rj45_per_node: 1
+  tor_uplink_qsfp28_per_tor: 2
+  spares_fraction: 0.1
+
+media_rules:
+  sfp28_25g:
+    dac_max_m: 3
+    bins_m: [1, 3, 5, 10]
+  qsfp28_100g:
+    dac_max_m: 3
+    bins_m: [1, 3, 5, 10]
+  rj45_cat6a:
+    bins_m: [1, 3, 5, 10, 30, 100, 150]  # Include 150m bin > 100m
+
+heuristics:
+  same_rack_leaf_to_node_m: 90.0  # Large distance to force 150m bin selection
+  adjacent_rack_leaf_to_spine_m: 10.0
+  non_adjacent_rack_leaf_to_spine_m: 30.0
+  slack_factor: 1.2  # 90 * 1.2 = 108m, will select 150m bin
+  tile_m: 1.0
+
+redundancy:
+  node_dual_homing: false
+  tor_uplinks_min: 2
+
+oversubscription:
+  max_leaf_to_spine_ratio: 4.0

@@ -1,0 +1,30 @@
+# sfp28_25g.bins_m: [] → FAIL POLICY_BINS_EMPTY
+defaults:
+  nodes_25g_per_node: 1
+  mgmt_rj45_per_node: 1
+  tor_uplink_qsfp28_per_tor: 2
+  spares_fraction: 0.10
+
+media_rules:
+  sfp28_25g:
+    dac_max_m: 7
+    bins_m: []  # Invalid: empty bins
+  qsfp28_100g:
+    dac_max_m: 5
+    bins_m: [1, 2, 3, 5, 7, 10]
+  rj45_cat6a:
+    bins_m: [1, 2, 3, 5, 7, 10, 20, 30]
+
+redundancy:
+  node_dual_homing: false
+  tor_uplinks_min: 2
+
+oversubscription:
+  max_leaf_to_spine_ratio: 4.0
+
+heuristics:
+  same_rack_leaf_to_node_m: 2.0
+  adjacent_rack_leaf_to_spine_m: 5.0
+  non_adjacent_rack_leaf_to_spine_m: 10.0
+  tile_m: 1.0
+  slack_factor: 1.2

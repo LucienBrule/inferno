@@ -1,0 +1,11 @@
+# Site configuration for tile_variants test fixture
+# Tests tile size sensitivity with larger tiles
+
+racks:
+  - id: "rack-01"
+    grid: [0, 0]
+  - id: "rack-02" 
+    grid: [2, 0]  # Manhattan distance = 2 tiles
+
+spine:
+  rack_id: "rack-01"  # Spine in rack-01 at origin

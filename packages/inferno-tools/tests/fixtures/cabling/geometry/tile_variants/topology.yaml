@@ -1,0 +1,19 @@
+# Topology for tile_variants test fixture
+# Simple spine-leaf topology with 2 racks
+
+spine:
+  id: "spine-01"
+  model: "Test-Spine-32"
+  ports:
+    qsfp28_total: 32
+
+racks:
+  - rack_id: "rack-01"
+    tor_id: "tor-01"
+    uplinks_qsfp28: 2
+  - rack_id: "rack-02"
+    tor_id: "tor-02"
+    uplinks_qsfp28: 2
+
+wan:
+  uplinks_cat6a: 2

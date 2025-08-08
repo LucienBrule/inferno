@@ -1,0 +1,32 @@
+# Cabling policy for slack_variants test - slack_factor = 1.5
+# Tests slack factor sensitivity with high slack applied
+
+defaults:
+  nodes_25g_per_node: 2
+  mgmt_rj45_per_node: 1
+  tor_uplink_qsfp28_per_tor: 2
+  spares_fraction: 0.1
+
+media_rules:
+  sfp28_25g:
+    dac_max_m: 3
+    bins_m: [1, 3, 5, 10]
+  qsfp28_100g:
+    dac_max_m: 3
+    bins_m: [1, 3, 5, 10]
+  rj45_cat6a:
+    bins_m: [1, 3, 5, 10, 30, 100]
+
+heuristics:
+  same_rack_leaf_to_node_m: 2.0
+  adjacent_rack_leaf_to_spine_m: 10.0
+  non_adjacent_rack_leaf_to_spine_m: 30.0
+  slack_factor: 1.5  # High slack applied
+  tile_m: 1.0
+
+redundancy:
+  node_dual_homing: false
+  tor_uplinks_min: 2
+
+oversubscription:
+  max_leaf_to_spine_ratio: 4.0

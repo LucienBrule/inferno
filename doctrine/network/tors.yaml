@@ -1,63 +1,34 @@
+# Top-of-rack and spine switch configurations
+# Defines switch models and port capacities
 
+tors:
+  - id: "tor-west-1"
+    rack_id: "rack-1"
+    model: "Mellanox SN2410"
+    ports:
+      sfp28_total: 48
+      qsfp28_total: 4
+  - id: "tor-east-1"
+    rack_id: "rack-2"
+    model: "Mellanox SN2410"
+    ports:
+      sfp28_total: 48
+      qsfp28_total: 4
+  - id: "tor-north-1"
+    rack_id: "rack-3"
+    model: "Mellanox SN2410"
+    ports:
+      sfp28_total: 48
+      qsfp28_total: 4
+  - id: "tor-crypt-1"
+    rack_id: "rack-4"
+    model: "Mellanox SN2410"
+    ports:
+      sfp28_total: 48
+      qsfp28_total: 4
 
-# tors.yaml — Top-of-Rack Switch Manifest
-
-- id: tor-west-1
-  rack_id: rack-1
-  model: FS S5850-48B8C
-  ports: "48x25G SFP28, 8x100G QSFP28"
-  nos: FSOS (SONiC capable)
-  uplinks:
-    - port: qsfp28-1
-      type: 100G
-      peer: core-1
-    - port: qsfp28-2
-      type: 100G
-      peer: core-2
-  vendor: FS.com
-  notes: First ToR in Avernus-West
-
-- id: tor-east-1
-  rack_id: rack-2
-  model: FS S5850-48B8C
-  ports: "48x25G SFP28, 8x100G QSFP28"
-  nos: FSOS (SONiC capable)
-  uplinks:
-    - port: qsfp28-1
-      type: 100G
-      peer: core-1
-    - port: qsfp28-2
-      type: 100G
-      peer: core-2
-  vendor: FS.com
-  notes: First ToR in Avernus-East
-
-- id: tor-north-1
-  rack_id: rack-3
-  model: FS S5850-48B8C
-  ports: "48x25G SFP28, 8x100G QSFP28"
-  nos: FSOS (SONiC capable)
-  uplinks:
-    - port: qsfp28-1
-      type: 100G
-      peer: core-1
-    - port: qsfp28-2
-      type: 100G
-      peer: core-2
-  vendor: FS.com
-  notes: First ToR in Avernus-North
-
-- id: tor-crypt-1
-  rack_id: rack-4
-  model: FS S5850-48B8C
-  ports: "48x25G SFP28, 8x100G QSFP28"
-  nos: FSOS (SONiC capable)
-  uplinks:
-    - port: qsfp28-1
-      type: 100G
-      peer: core-1
-    - port: qsfp28-2
-      type: 100G
-      peer: core-2
-  vendor: FS.com
-  notes: First ToR in Avernus-Crypt
+spines:
+  - id: "spine-1"
+    model: "Mellanox SN2700"
+    ports:
+      qsfp28_total: 32

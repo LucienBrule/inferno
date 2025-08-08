@@ -1,0 +1,12 @@
+# Far racks test fixture - distance exceeding max bin
+# With tile_m=1.0, slack_factor=1.2, max_bin=10m
+# Distance = 9 tiles * 1.0 * 1.2 = 10.8m (exceeds max bin of 10m)
+
+racks:
+  - id: "rack-01"
+    grid: [0, 0]
+  - id: "rack-02" 
+    grid: [9, 0]  # Manhattan distance = 9 tiles
+
+spine:
+  rack_id: "rack-01"  # Spine in rack-01 at origin

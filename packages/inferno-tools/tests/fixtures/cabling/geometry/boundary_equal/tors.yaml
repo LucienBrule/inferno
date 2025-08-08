@@ -1,0 +1,21 @@
+# ToR specifications for boundary_equal test fixture
+
+tors:
+  - id: "tor-01"
+    rack_id: "rack-01"
+    model: "Test-Switch-48"
+    ports:
+      sfp28_total: 48
+      qsfp28_total: 4
+  - id: "tor-02"
+    rack_id: "rack-02"
+    model: "Test-Switch-48"
+    ports:
+      sfp28_total: 48
+      qsfp28_total: 4
+
+spines:
+  - id: "spine-01"
+    model: "Test-Spine-32"
+    ports:
+      qsfp28_total: 32

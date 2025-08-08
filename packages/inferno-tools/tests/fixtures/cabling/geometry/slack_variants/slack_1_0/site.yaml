@@ -1,0 +1,11 @@
+# Site configuration for slack_variants/slack_1_0 test fixture
+# Tests slack factor sensitivity with no slack applied
+
+racks:
+  - id: "rack-01"
+    grid: [0, 0]
+  - id: "rack-02" 
+    grid: [2, 0]  # Manhattan distance = 2 tiles
+
+spine:
+  rack_id: "rack-01"  # Spine in rack-01 at origin

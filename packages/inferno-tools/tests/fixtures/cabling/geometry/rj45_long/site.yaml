@@ -1,0 +1,9 @@
+# Site configuration for rj45_long test fixture
+# Tests RJ45 connections using bins > 100m to trigger RJ45_BIN_GT_100M warning
+
+racks:
+  - id: "rack-01"
+    grid: [0, 0]
+
+spine:
+  rack_id: "rack-01"  # Spine in rack-01 at origin

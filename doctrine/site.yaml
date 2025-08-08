@@ -1,0 +1,19 @@
+# Site configuration with rack layout and geometry
+# Defines physical rack positions for distance calculations
+
+racks:
+  - id: "rack-1"
+    grid: [0, 0]
+    tor_position_u: 42
+  - id: "rack-2"
+    grid: [1, 0]
+    tor_position_u: 42
+  - id: "rack-3"
+    grid: [0, 1]
+    tor_position_u: 42
+  - id: "rack-4"
+    grid: [1, 1]
+    tor_position_u: 42
+
+spine:
+  rack_id: "rack-1"

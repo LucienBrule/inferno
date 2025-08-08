@@ -1,0 +1,14 @@
+- id: "node-01-01"
+  rack_id: "rack-01"
+  nics:
+    - type: "SFP28"
+      count: 2
+    - type: "RJ45"
+      count: 1
+- id: "node-01-02"
+  rack_id: "rack-01"
+  nics:
+    - type: "SFP28"
+      count: 2
+    - type: "RJ45"
+      count: 1
