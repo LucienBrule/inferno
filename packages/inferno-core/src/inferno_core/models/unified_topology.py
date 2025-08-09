@@ -41,7 +41,8 @@ class UnifiedSwitch(BaseModel):
     id: str
     model: str
     nos: Optional[str] = None  # Network OS
-    rack_id: Optional[str] = None  # For leaf switches
+    # THE SPINE IS A SWITCH AND NEEDS A RACK ID TOO!
+    rack_id: str  # For leaf switches
     interfaces: Optional[List[UnifiedInterface]] = None  # Interface-level view
     ports: Optional[UnifiedPorts] = None  # Capacity view
 

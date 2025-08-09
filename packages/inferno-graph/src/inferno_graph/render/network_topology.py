@@ -1,9 +1,10 @@
 import graphviz
-from inferno_core.data.network import network_topology
+
+from inferno_core.data.network import load_network_topology
 from inferno_core.models.network import NetworkTopology
 
 
-def render_network_topology(topology: NetworkTopology = network_topology) -> graphviz.Digraph:
+def render_network_topology(topology: NetworkTopology = load_network_topology()) -> graphviz.Digraph:
     """
     Render the leaf–spine network topology:
     - Spine clusters in lightblue.

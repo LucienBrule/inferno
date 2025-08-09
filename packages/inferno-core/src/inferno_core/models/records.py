@@ -143,3 +143,16 @@ class SiteRec(BaseModel):
 
     model_config = ConfigDict(extra="ignore")
     racks: list[SiteRackRec]
+
+
+class LinkRec(BaseModel):
+    """Link record."""
+
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    source: str
+    destination: str
+    type: str
+    speed: int = Field(ge=0)
+    mtu: int = Field(ge=0)
+    status: str = Field(default="up")

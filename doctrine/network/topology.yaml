@@ -2,6 +2,7 @@
 
 spines:
   - id: "spine-1"
+    rack_id: "rack-1"
     model: "Mellanox SN2700"
     nos: "Cumulus Linux (SONiC compatible)"
     interfaces:

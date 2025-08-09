@@ -64,6 +64,7 @@ def _derive_capacity_info(
     spine_ports = UnifiedPorts(qsfp28_total=max(qsfp28_count, 32))  # Default to 32 if not enough interfaces
     unified_spine = UnifiedSwitch(
         id=spine_switch.id,
+        rack_id=spine_switch.rack_id,
         model=spine_switch.model,
         nos=spine_switch.nos,
         interfaces=spine_switch.interfaces,
@@ -140,7 +141,11 @@ def load_unified_topology(path: Path | str = Path("doctrine/network/topology.yam
 
             spines.append(
                 UnifiedSwitch(
-                    id=spine_data["id"], model=spine_data["model"], nos=spine_data.get("nos"), interfaces=interfaces
+                    id=spine_data["id"],
+                    rack_id=spine_data.get("rack_id"),
+                    model=spine_data["model"],
+                    nos=spine_data.get("nos"),
+                    interfaces=interfaces,
                 )
             )
 

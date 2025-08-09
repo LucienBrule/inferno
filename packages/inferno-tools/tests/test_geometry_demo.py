@@ -90,7 +90,6 @@ def test_geometry_fixture():
     print(f"  - Max bin: {finding.context.get('bin')}m")
 
 
-
 def test_no_site_fixture():
     """Test validation behavior when site.yaml is missing."""
     print("\nTesting no_site fixture...")

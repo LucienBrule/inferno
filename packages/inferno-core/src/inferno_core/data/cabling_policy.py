@@ -1,5 +1,5 @@
 # inferno_core/data/cabling_policy.py
-from __future__  import annotations
+from __future__ import annotations
 from pathlib import Path
 
 from inferno_core.codebase.deprecation import deprecated

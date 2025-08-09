@@ -18,12 +18,12 @@ import yaml
 # Import the functions we want to test
 from inferno_tools.cabling import (
     _aggregate_cable_bom,
-    _build_network_links,
-    _calculate_manhattan_distance,
+    build_network_links,
+    calculate_manhattan_distance,
     _export_bom,
-    _select_cable_type_and_bin,
+    select_cable_type_and_bin,
     _validate_bom,
-    _with_spares,
+    with_spares,
     calculate_cabling_bom,
 )
 from inferno_core.data.cabling_policy import load_cabling_policy
@@ -34,32 +34,32 @@ class TestManhattanDistance:
 
     def test_same_position(self):
         """Test distance calculation for same rack position."""
-        distance = _calculate_manhattan_distance([0, 0], [0, 0])
+        distance = calculate_manhattan_distance([0, 0], [0, 0])
         assert distance == 0.0
 
     def test_adjacent_horizontal(self):
         """Test distance calculation for horizontally adjacent racks."""
-        distance = _calculate_manhattan_distance([0, 0], [1, 0])
+        distance = calculate_manhattan_distance([0, 0], [1, 0])
         assert distance == 1.0  # 1 tile * 1 meter per tile (default)
 
     def test_adjacent_vertical(self):
         """Test distance calculation for vertically adjacent racks."""
-        distance = _calculate_manhattan_distance([0, 0], [0, 1])
+        distance = calculate_manhattan_distance([0, 0], [0, 1])
         assert distance == 1.0  # 1 tile * 1 meter per tile (default)
 
     def test_diagonal_distance(self):
         """Test distance calculation for diagonal rack positions."""
-        distance = _calculate_manhattan_distance([0, 0], [1, 1])
+        distance = calculate_manhattan_distance([0, 0], [1, 1])
         assert distance == 2.0  # (1 + 1) * 1 meter per tile (default)
 
     def test_custom_tile_size(self):
         """Test distance calculation with custom tile size."""
-        distance = _calculate_manhattan_distance([0, 0], [2, 1], tile_m=4.0)
+        distance = calculate_manhattan_distance([0, 0], [2, 1], tile_m=4.0)
         assert distance == 12.0  # (2 + 1) * 4 meters per tile
 
     def test_negative_coordinates(self):
         """Test distance calculation with negative coordinates."""
-        distance = _calculate_manhattan_distance([-1, -1], [1, 1])
+        distance = calculate_manhattan_distance([-1, -1], [1, 1])
         assert distance == 4.0  # (2 + 2) * 1 meter per tile (default)
 
 
@@ -86,37 +86,37 @@ class TestCableTypeSelection:
 
     def test_25g_dac_selection(self):
         """Test 25G DAC cable selection for short distances."""
-        cable_type, length_bin = _select_cable_type_and_bin(2.0, "25G", self.policy, self.length_bins)
+        cable_type, length_bin = select_cable_type_and_bin(2.0, "25G", self.policy, self.length_bins)
         assert cable_type == "SFP28 25G DAC"
         assert length_bin == 3  # 2.0 * 1.2 = 2.4, rounds up to 3m bin
 
     def test_25g_aoc_selection(self):
         """Test 25G AOC cable selection for medium distances."""
-        cable_type, length_bin = _select_cable_type_and_bin(5.0, "25G", self.policy, self.length_bins)
+        cable_type, length_bin = select_cable_type_and_bin(5.0, "25G", self.policy, self.length_bins)
         assert cable_type == "SFP28 25G AOC"
         assert length_bin == 7  # 5.0 * 1.2 = 6.0, rounds up to 7m bin
 
     def test_25g_fiber_selection(self):
         """Test 25G fiber cable selection for long distances."""
-        cable_type, length_bin = _select_cable_type_and_bin(15.0, "25G", self.policy, self.length_bins)
+        cable_type, length_bin = select_cable_type_and_bin(15.0, "25G", self.policy, self.length_bins)
         assert cable_type == "SFP28 25G MMF + SR"
         assert length_bin == 10  # Uses largest bin for distances exceeding all bins
 
     def test_100g_dac_selection(self):
         """Test 100G DAC cable selection."""
-        cable_type, length_bin = _select_cable_type_and_bin(1.5, "100G", self.policy, self.length_bins)
+        cable_type, length_bin = select_cable_type_and_bin(1.5, "100G", self.policy, self.length_bins)
         assert cable_type == "QSFP28 100G DAC"
         assert length_bin == 2  # 1.5 * 1.2 = 1.8, rounds up to 2m bin
 
     def test_rj45_selection(self):
         """Test RJ45 cable selection."""
-        cable_type, length_bin = _select_cable_type_and_bin(3.0, "RJ45", self.policy, self.length_bins)
+        cable_type, length_bin = select_cable_type_and_bin(3.0, "RJ45", self.policy, self.length_bins)
         assert cable_type == "RJ45 Cat6A"
         assert length_bin == 5  # 3.0 * 1.2 = 3.6, rounds up to 5m bin
 
     def test_unknown_link_type(self):
         """Test handling of unknown link types."""
-        cable_type, length_bin = _select_cable_type_and_bin(2.0, "UNKNOWN", self.policy, self.length_bins)
+        cable_type, length_bin = select_cable_type_and_bin(2.0, "UNKNOWN", self.policy, self.length_bins)
         assert cable_type == "Unknown UNKNOWN"
         assert length_bin == 3
 
@@ -126,22 +126,22 @@ class TestSparesCalculation:
 
     def test_with_spares_basic(self):
         """Test basic spares calculation."""
-        result = _with_spares(10, 0.10)
+        result = with_spares(10, 0.10)
         assert result == 11  # 10 * 1.1 = 11
 
     def test_with_spares_rounding_up(self):
         """Test spares calculation rounds up."""
-        result = _with_spares(9, 0.10)
+        result = with_spares(9, 0.10)
         assert result == 10  # 9 * 1.1 = 9.9, rounds up to 10
 
     def test_with_spares_zero_count(self):
         """Test spares calculation with zero count."""
-        result = _with_spares(0, 0.10)
+        result = with_spares(0, 0.10)
         assert result == 0
 
     def test_with_spares_high_percentage(self):
         """Test spares calculation with high percentage."""
-        result = _with_spares(5, 0.50)
+        result = with_spares(5, 0.50)
         assert result == 8  # 5 * 1.5 = 7.5, rounds up to 8
 
 
@@ -332,7 +332,7 @@ class TestNetworkLinkBuilding:
             "media_rules": {"qsfp28_100g": {"dac_max_m": 3, "labels": {"dac": "QSFP28 100G DAC"}}},
         }
 
-        links = _build_network_links(topology, site, policy)
+        links = build_network_links(topology, site, policy)
 
         assert len(links) == 1
         assert links[0]["from"] == "spine-1:eth1/1"
@@ -349,7 +349,7 @@ class TestNetworkLinkBuilding:
 
         policy = {"defaults": {"slack_factor": 1.2}, "media_rules": {"rj45_cat6a": {"label": "RJ45 Cat6A"}}}
 
-        links = _build_network_links(topology, site, policy)
+        links = build_network_links(topology, site, policy)
 
         assert len(links) == 2
         assert all(link["category"] == "wan" for link in links)

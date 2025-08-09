@@ -16,7 +16,8 @@ class Switch(BaseModel):
     model: str
     nos: str
     interfaces: List[Interface]
-    rack_id: Optional[str] = None  # only present for leaf switches
+    # THE SPINE IS A SWITCH AND NEEDS THE RACK ID DEFINED!!!
+    rack_id: str  # only present for leaf switches
 
 
 class NetworkTopology(BaseModel):

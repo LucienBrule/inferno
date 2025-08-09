@@ -17,11 +17,12 @@ def spy_trace(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         if spy_enabled():
-            _SPY_LOGGER.debug("Entering %s", func.__qualname__)
+            _SPY_LOGGER.info("Entering %s", func.__qualname__)
         result = func(*args, **kwargs)
         if spy_enabled():
-            _SPY_LOGGER.debug("Exiting %s", func.__qualname__)
+            _SPY_LOGGER.info("Exiting %s", func.__qualname__)
         return result
+
     return wrapper
 
 
@@ -64,6 +65,7 @@ class BaseSpyObject:
         Supports Pydantic v2 (model_dump), Pydantic v1 (dict), dataclasses, and collections.
         """
         from dataclasses import is_dataclass, asdict
+
         try:
             from pydantic import BaseModel as _PydBase
         except Exception:

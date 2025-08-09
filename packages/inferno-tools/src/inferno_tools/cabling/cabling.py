@@ -7,10 +7,10 @@ console = Console()
 
 
 def validate_cabling(
-        *,
-        topology_path: str,
-        nodes_path: str,
-        tors_path: str,
+    *,
+    topology_path: str,
+    nodes_path: str,
+    tors_path: str,
 ) -> None:
     """Sanity-check manifests vs port budgets and NIC declarations (stub)."""
     console.print("\n[bold cyan]Cabling Validation — stub[/bold cyan]")
@@ -23,9 +23,9 @@ def validate_cabling(
 
 
 def visualize_cabling(
-        *,
-        site_path: Optional[str],
-        output_path: str,
+    *,
+    site_path: Optional[str],
+    output_path: str,
 ) -> None:
     """Render a simple SVG of rack grid and link classes (stub)."""
     console.print("\n[bold cyan]Cabling Visualization — stub[/bold cyan]")
@@ -38,11 +38,11 @@ def visualize_cabling(
 # Back-compat shim (legacy name)
 # ----------------------------
 def estimate_cabling(
-        num_racks: int = 4,
-        nodes_per_rack: int = 4,
-        uplinks_per_rack: int = 2,
-        trunk_cables: int = 2,
-        include_spine_links: bool = True,
+    num_racks: int = 4,
+    nodes_per_rack: int = 4,
+    uplinks_per_rack: int = 2,
+    trunk_cables: int = 2,
+    include_spine_links: bool = True,
 ):
     # DEPRECATED: Kept for early experiments. Prefer `estimate_cabling_heuristic()`.
     console.print(

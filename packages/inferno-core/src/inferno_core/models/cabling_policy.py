@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field, AliasChoices, ConfigDict
 
 # ---- leaf structs ----
 
+
 class MediaLabels(BaseModel):
     model_config = ConfigDict(extra="ignore")
     dac: Optional[str] = None
@@ -12,11 +13,13 @@ class MediaLabels(BaseModel):
     # RJ45 policy uses a single "label"
     label: Optional[str] = None
 
+
 class MediaRule(BaseModel):
     model_config = ConfigDict(extra="ignore")
     dac_max_m: Optional[float] = None
     bins_m: List[int] = Field(default_factory=lambda: [1, 2, 3, 5, 7, 10])
     labels: Optional[MediaLabels] = None
+
 
 class PolicyDefaults(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -27,6 +30,7 @@ class PolicyDefaults(BaseModel):
     # this existed in your legacy normalizer; keep it optional for compatibility
     wan_cat6a_count: Optional[int] = None
 
+
 class SiteDefaults(BaseModel):
     model_config = ConfigDict(extra="ignore")
     num_racks: int = 4
@@ -35,15 +39,18 @@ class SiteDefaults(BaseModel):
     mgmt_rj45_per_node: int = 1
     wan_cat6a: int = 2
 
+
 class Redundancy(BaseModel):
     model_config = ConfigDict(extra="ignore")
     node_dual_homing: bool = False
     tor_uplinks_min: int = 2
 
+
 class Oversubscription(BaseModel):
     model_config = ConfigDict(extra="ignore")
     max_leaf_to_spine_ratio: float = 4.0
     warn_margin_fraction: float = 0.25
+
 
 class Heuristics(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -53,7 +60,6 @@ class Heuristics(BaseModel):
     slack_factor: float = 1.2
     tile_m: float = 1.0
 
-# ---- root policy ----
 
 class CablingPolicy(BaseModel):
     model_config = ConfigDict(extra="ignore", populate_by_name=True)

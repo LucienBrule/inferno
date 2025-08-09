@@ -1,23 +1,24 @@
 from typing import Optional, List
 
 from inferno_core.data.cabling_policy import load_cabling_policy
-from inferno_tools.cabling import _with_spares
+from inferno_tools.cabling import with_spares
 from rich.console import Console
 
 console = Console()
 
+
 def estimate_cabling_heuristic(
-        *,
-        policy_path: str = "doctrine/network/cabling-policy.yaml",
-        spares_fraction: float = 0.10,
-        length_bins_m: Optional[List[int]] = None,
-        # heuristic knobs (kept for DX; later replaced by policy file)
-        num_racks: int = 4,
-        nodes_per_rack: int = 4,
-        uplinks_per_rack: int = 2,
-        mgmt_rj45_per_node: int = 1,
-        wan_cat6a: int = 2,
-        include_spine_links: bool = True,
+    *,
+    policy_path: str = "doctrine/network/cabling-policy.yaml",
+    spares_fraction: float = 0.10,
+    length_bins_m: Optional[List[int]] = None,
+    # heuristic knobs (kept for DX; later replaced by policy file)
+    num_racks: int = 4,
+    nodes_per_rack: int = 4,
+    uplinks_per_rack: int = 2,
+    mgmt_rj45_per_node: int = 1,
+    wan_cat6a: int = 2,
+    include_spine_links: bool = True,
 ) -> None:
     """Quick heuristic counts by class (no site geometry required).
 
@@ -57,10 +58,10 @@ def estimate_cabling_heuristic(
     total_wan = wan_cat6a_eff
 
     # With spares (rounded up)
-    total_leaf_to_node_sp = _with_spares(total_leaf_to_node, spares_fraction_eff)
-    total_leaf_to_spine_sp = _with_spares(total_leaf_to_spine, spares_fraction_eff)
-    total_mgmt_sp = _with_spares(total_mgmt, spares_fraction_eff)
-    total_wan_sp = _with_spares(total_wan, spares_fraction_eff)
+    total_leaf_to_node_sp = with_spares(total_leaf_to_node, spares_fraction_eff)
+    total_leaf_to_spine_sp = with_spares(total_leaf_to_spine, spares_fraction_eff)
+    total_mgmt_sp = with_spares(total_mgmt, spares_fraction_eff)
+    total_wan_sp = with_spares(total_wan, spares_fraction_eff)
 
     console.print("\n[bold cyan]Inferno Cabling Estimator (heuristic)[/bold cyan]\n")
     console.print(

@@ -11,8 +11,10 @@ def load_pdus(path: Path = Path("doctrine/power/pdu.yaml")) -> list[PDU]:
 def load_ups(path: Path = Path("doctrine/power/ups.yaml")) -> list[UPS]:
     return load_yaml_list(path, UPS)
 
+
 def load_feeds(path: Path = Path("doctrine/power/feeds.yaml")) -> list[PowerFeed]:
     return load_yaml_list(path, PowerFeed)
+
 
 pdus = load_pdus()
 ups = load_ups()
